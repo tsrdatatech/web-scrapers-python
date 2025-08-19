@@ -2,7 +2,7 @@
 
 [![CI/CD Pipeline](https://github.com/tsrdatatech/web-scrapers-python/actions/workflows/ci.yml/badge.svg)](https://github.com/tsrdatatech/web-scrapers-python/actions/workflows/ci.yml)
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker)](https://github.com/tsrdatatech/web-scrapers-python/pkgs/container/web-scrapers-python)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A sophisticated, production-ready web scraping framework demonstrating advanced Python architecture patterns, comprehensive testing practices, and enterprise-level software engineering.
