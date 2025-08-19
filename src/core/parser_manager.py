@@ -3,7 +3,6 @@ Parser manager for intelligent parser selection.
 """
 
 from typing import Optional
-from urllib.parse import urlparse
 
 import httpx
 

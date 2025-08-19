@@ -3,8 +3,6 @@ Parser registry for auto-discovery and management of parsers.
 """
 
 import importlib.util
-import os
-import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
