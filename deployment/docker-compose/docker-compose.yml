@@ -1,0 +1,74 @@
+# Development Docker Compose for local development
+services:
+  web-scraper:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+      target: production
+    image: web-scraper:latest
+    container_name: web-scraper-dev
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - SCRAPER_ENV=development
+    volumes:
+      # Mount source code for development
+      - ../../src:/app/src:ro
+      - ../../tests:/app/tests:ro
+      # Persistent storage
+      - ../../storage:/app/storage
+      - scraper-logs:/app/logs
+    ports:
+      - "8080:8080"  # For potential web interface
+    command: ["python", "-m", "src.main", "--help"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "from src.core.logger import get_logger; get_logger('health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis for caching and queue management (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: web-scraper-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # PostgreSQL for data storage (optional)
+  postgres:
+    image: postgres:15-alpine
+    container_name: web-scraper-db
+    environment:
+      POSTGRES_DB: scraper_db
+      POSTGRES_USER: scraper
+      POSTGRES_PASSWORD: scraper_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../config/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scraper -d scraper_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  scraper-logs:
+    driver: local
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local

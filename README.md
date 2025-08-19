@@ -1,0 +1,208 @@
+# Universal Web Scraper - Technical Portfolio
+
+[![CI/CD Pipeline](https://github.com/tsrdatatech/web-scrapers-python/actions/workflows/ci.yml/badge.svg)](https://github.com/tsrdatatech/web-scrapers-python/actions/workflows/ci.yml)
+[![Docker Image](https://ghcr-badge.deta.dev/tsrdatatech/web-scrapers-python/latest_tag?trim=major&label=docker)](https://github.com/tsrdatatech/web-scrapers-python/pkgs/container/web-scrapers-python)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+A sophisticated, production-ready web scraping framework demonstrating advanced Python architecture patterns, comprehensive testing practices, and enterprise-level software engineering.
+
+> **Portfolio Project**: This repository showcases professional software development skills including clean architecture, test-driven development, CI/CD implementation, and modern Python best practices.
+
+## 🎯 Technical Highlights
+
+- **Clean Architecture**: Plugin-based system with SOLID principles
+- **Production Ready**: Comprehensive error handling, logging, and monitoring
+- **Test-Driven Development**: 26+ automated tests with CI/CD integration
+- **Type Safety**: Full mypy compliance with strict type checking
+- **Modern Python**: Async/await, Pydantic v2, dependency injection patterns
+- **DevOps Integration**: GitHub Actions, automated quality checks, multi-environment testing
+
+## 🏗️ Architecture Overview
+
+This project demonstrates enterprise-level software design patterns:
+
+- **Abstract Factory Pattern**: Dynamic parser creation and registration
+- **Strategy Pattern**: Runtime parser selection based on URL analysis  
+- **Template Method Pattern**: Extensible base parser with customizable hooks
+- **Dependency Injection**: Registry-based component management
+- **Observer Pattern**: Event-driven logging and monitoring
+
+## 🚀 Technical Stack
+
+- **Browser Automation**: Crawlee + Playwright for sophisticated queue management
+- **Data Validation**: Pydantic v2 with advanced type checking and serialization
+- **Content Extraction**: Multi-method approach (Newspaper3k + Trafilatura + custom)
+- **Async Architecture**: Modern Python async/await patterns throughout
+- **Structured Logging**: Loguru with contextual error tracking
+- **Testing Framework**: Pytest with comprehensive coverage strategies
+- **Containerization**: Multi-stage Docker builds with production optimization
+- **CI/CD Pipeline**: GitHub Actions with automated testing, security scanning, and deployment
+
+## 📚 Professional Skills Demonstrated
+
+### Software Architecture
+- **Plugin Architecture**: Extensible parser system following Open/Closed Principle
+- **Dependency Injection**: Registry-based component management
+- **Strategy Pattern**: Dynamic parser selection based on URL analysis
+- **Abstract Base Classes**: Template method pattern for consistent behavior
+- **Separation of Concerns**: Clear boundaries between parsing, validation, and output
+
+### Python Expertise  
+- **Type Safety**: Full mypy compliance with strict typing
+- **Async Programming**: Efficient concurrent processing with proper error handling
+- **Modern Features**: Context managers, decorators, dataclasses, and type hints
+- **Data Validation**: Runtime type checking with Pydantic schemas
+- **Error Handling**: Comprehensive exception management with graceful degradation
+
+### Testing & Quality Assurance
+- **Test-Driven Development**: 26+ automated tests covering multiple scenarios
+- **Integration Testing**: End-to-end workflow validation
+- **Continuous Integration**: GitHub Actions with multi-Python version testing
+- **Code Quality**: Automated linting, formatting, and security scanning
+- **Documentation**: Comprehensive inline documentation and usage examples
+
+### DevOps & Production Practices
+- **CI/CD Pipeline**: Automated testing, quality checks, and deployment
+- **Containerization**: Multi-stage Docker builds with security hardening
+- **Environment Management**: Poetry for dependency management
+- **Logging & Monitoring**: Structured logging with contextual error tracking
+- **Configuration Management**: Flexible configuration with environment support
+- **Security**: Dependency scanning and vulnerability assessment
+- **Container Registry**: Automated builds with GitHub Container Registry
+- **Multi-platform Support**: ARM64 and AMD64 container builds
+
+## 🏛️ Core Features
+
+- **Multi-Parser Architecture**: Automatic parser selection based on URL fingerprinting
+- **Production Pipelines**: Complete CI/CD with automated testing, building, and deployment
+- **Container Orchestration**: Kubernetes-ready with multi-stage Docker builds
+- **Type-Safe Data Models**: Pydantic v2 schemas with comprehensive validation
+- **Async Content Extraction**: High-performance processing with Playwright automation
+- **Enterprise Monitoring**: Structured logging with contextual error tracking
+
+## 💻 Implementation Details
+
+### Parser Registry System
+```python
+# Automatic parser discovery and registration
+@dataclass
+class BaseParser:
+    """Abstract base implementing Template Method pattern"""
+    
+    async def can_parse(self, url: str) -> bool:
+        """Strategy pattern for runtime parser selection"""
+        
+    async def parse(self, page: Page, context: dict) -> BaseModel:
+        """Core extraction logic with type safety"""
+```
+
+### Data Validation Pipeline
+```python
+# Pydantic v2 schema with advanced validation
+class NewsArticle(BaseModel):
+    title: str = Field(..., min_length=1, max_length=500)
+    content: str = Field(..., min_length=10)
+    url: HttpUrl
+    published_date: Optional[datetime] = None
+    author: Optional[str] = Field(None, max_length=200)
+    
+    @field_validator('content')
+    @classmethod
+    def validate_content_quality(cls, v: str) -> str:
+        # Custom business logic validation
+        return v.strip()
+```
+
+## 🏗️ System Architecture
+
+```
+src/
+├── main.py                 # Application entry point
+├── routes.py              # Crawlee request routing logic
+├── core/
+│   ├── base_parser.py     # Abstract parser base class
+│   ├── logger.py          # Structured logging configuration
+│   ├── parser_registry.py # Dynamic parser discovery
+│   ├── parser_manager.py  # Parser selection strategy
+│   ├── proxy_config.py    # Proxy management system
+│   └── seeds.py           # Input processing pipeline
+├── parsers/
+│   ├── generic_news.py    # Universal news extraction
+│   └── weibo.py           # Social media specialized parser
+└── schemas/
+    └── news.py            # Type-safe data models
+```
+
+## 🔬 Testing Framework
+
+Comprehensive test coverage demonstrating TDD practices:
+
+- **26+ Automated Tests**: Unit, integration, and end-to-end coverage
+- **Multi-Python Support**: Testing matrix across Python 3.9-3.12
+- **Mock Strategies**: Isolated testing with Playwright simulation
+- **CI Integration**: Automated testing on every commit
+
+### Test Architecture
+```python
+# Example: Parser validation testing
+@pytest.mark.asyncio
+async def test_parser_discovery():
+    """Validates dynamic parser registration"""
+    registry = ParserRegistry()
+    parsers = await registry.discover_parsers()
+    assert len(parsers) > 0
+    
+@pytest.mark.asyncio  
+async def test_type_safety():
+    """Ensures Pydantic schema compliance"""
+    result = await parser.parse(mock_page, context)
+    assert isinstance(result, NewsArticle)
+    assert result.model_validate(result.model_dump())
+```
+
+## 🚢 DevOps & Deployment
+
+### Container Strategy
+- **Multi-stage Docker builds** optimized for production
+- **Security hardening** with non-root user execution
+- **Multi-platform support** (ARM64/AMD64) via GitHub Actions
+- **Kubernetes manifests** for cloud-native deployment
+
+### CI/CD Pipeline
+```yaml
+# Automated workflow demonstrating enterprise practices
+name: CI/CD Pipeline
+on: [push, pull_request]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11, 3.12]
+    
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build multi-platform image
+      - name: Security vulnerability scan
+      - name: Publish to GitHub Container Registry
+```
+
+### Production Architecture
+- **Kubernetes deployment** with configurable replicas
+- **Resource management** with requests/limits
+- **Environment configuration** via ConfigMaps
+- **Service exposure** with load balancing
+
+## 📈 Performance & Monitoring
+
+- **Async Processing**: Concurrent request handling with Playwright
+- **Queue Management**: Crawlee-based request deduplication  
+- **Structured Logging**: JSON-formatted logs with correlation IDs
+- **Error Recovery**: Graceful failure handling with retry logic
+- **Resource Optimization**: Memory-efficient content extraction
+
+## 🔧 Technical Keywords
+
+`Python` • `Async/Await` • `Pydantic` • `Playwright` • `Docker` • `Kubernetes` • `GitHub Actions` • `Test-Driven Development` • `Clean Architecture` • `Design Patterns` • `Type Safety` • `CI/CD` • `Container Orchestration` • `Web Scraping` • `Parser Registry` • `Strategy Pattern`

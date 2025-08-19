@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-scraper-python
+  namespace: web-scraper-python
+  labels:
+    app: universal-web-scraper-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: universal-web-scraper-python
+  template:
+    metadata:
+      labels:
+        app: universal-web-scraper-python
+    spec:
+      containers:
+        - name: web-scraper-python
+          image: universal-web-scraper-python:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: web-scraper-python-config
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          livenessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import sys; from src.core.logger import get_logger; get_logger('health'); sys.exit(0)"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import sys; print('Ready'); sys.exit(0)"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+          volumeMounts:
+            - name: storage
+              mountPath: /app/storage
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: storage
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+      restartPolicy: Always

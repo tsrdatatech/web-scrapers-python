@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-scraper-python-config
+  namespace: web-scraper-python
+data:
+  # Python-specific environment variables
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONPATH: '/app'
+
+  # Application configuration
+  LOG_LEVEL: 'INFO'
+  NODE_ENV: 'production'
+  DEFAULT_PARSER: 'generic-news'
+  MAX_CONCURRENT_REQUESTS: '5'
+
+  # Playwright configuration
+  PLAYWRIGHT_BROWSERS_PATH: '/app/.cache/ms-playwright'

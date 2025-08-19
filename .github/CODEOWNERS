@@ -1,0 +1,37 @@
+# Code Owners Configuration
+
+# This file defines who should review specific parts of the codebase
+# Automatically requests reviews from designated code owners on PRs
+
+# Global ownership - all changes require review
+* @tsrdatatech
+
+# Core architecture and business logic
+/src/core/ @tsrdatatech
+
+# Parser implementations - specialized knowledge required
+/src/parsers/ @tsrdatatech
+
+# Data schemas and validation
+/src/schemas/ @tsrdatatech
+
+# Test suite - quality assurance critical
+/tests/ @tsrdatatech
+
+# Deployment and infrastructure
+/deployment/ @tsrdatatech
+/.github/ @tsrdatatech
+
+# Documentation - important for maintainability  
+/docs/ @tsrdatatech
+*.md @tsrdatatech
+
+# Configuration files - high impact changes
+pyproject.toml @tsrdatatech
+poetry.lock @tsrdatatech
+Dockerfile @tsrdatatech
+docker-compose*.yml @tsrdatatech
+
+# Security and compliance
+.github/workflows/ @tsrdatatech
+deployment/ci-cd/ @tsrdatatech

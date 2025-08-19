@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: web-scraper-python
+  labels:
+    name: web-scraper-python
+    app: universal-web-scraper-python
