@@ -1,7 +1,7 @@
 # Universal Web Scraper - Technical Portfolio
 
 [![CI/CD Pipeline](https://github.com/tsrdatatech/web-scrapers-python/actions/workflows/ci.yml/badge.svg)](https://github.com/tsrdatatech/web-scrapers-python/actions/workflows/ci.yml)
-[![Docker Image](https://ghcr-badge.deta.dev/tsrdatatech/web-scrapers-python/latest_tag?trim=major&label=docker)](https://github.com/tsrdatatech/web-scrapers-python/pkgs/container/web-scrapers-python)
+[![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker)](https://github.com/tsrdatatech/web-scrapers-python/pkgs/container/web-scrapers-python)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
