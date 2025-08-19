@@ -1,5 +1,5 @@
 # Multi-stage Docker build for production-ready web scraper
-FROM python:3.12-slim as builder
+FROM python:3.12-slim AS builder
 
 # Set environment variables for Python
 ENV PYTHONUNBUFFERED=1 \
@@ -23,13 +23,14 @@ ENV POETRY_NO_INTERACTION=1 \
 
 # Copy dependency files
 WORKDIR /app
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock README.md ./
+COPY src/ ./src/
 
 # Install dependencies
 RUN poetry install --only=main && rm -rf $POETRY_CACHE_DIR
 
 # Production stage
-FROM python:3.12-slim as production
+FROM python:3.12-slim AS production
 
 # Install runtime dependencies including Playwright browsers
 RUN apt-get update && apt-get install -y \
