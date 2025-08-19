@@ -4,6 +4,7 @@ Logging configuration using Loguru.
 
 import os
 import sys
+
 from loguru import logger
 
 # Remove default handler

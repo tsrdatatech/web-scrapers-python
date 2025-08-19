@@ -4,12 +4,13 @@ Pydantic schemas for news articles and related data structures.
 
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, HttpUrl, Field
+
+from pydantic import BaseModel, Field, HttpUrl
 
 
 class NewsArticle(BaseModel):
     """Schema for news article data."""
-    
+
     id: Optional[str] = Field(None, description="Unique identifier for the article")
     title: str = Field(..., description="Article title")
     author: Optional[str] = Field(None, description="Article author")
@@ -19,13 +20,12 @@ class NewsArticle(BaseModel):
     content: Optional[str] = Field(None, description="Full article content")
     image: Optional[HttpUrl] = Field(None, description="Featured image URL")
     source: Optional[str] = Field(None, description="Source domain/publication")
-    
+
     class Config:
         """Pydantic model configuration."""
-        json_encoders = {
-            datetime: lambda v: v.isoformat() if v else None
-        }
-        
+
+        json_encoders = {datetime: lambda v: v.isoformat() if v else None}
+
         # Example data for documentation
         schema_extra = {
             "example": {
@@ -37,6 +37,6 @@ class NewsArticle(BaseModel):
                 "description": "This is a brief summary of the important event.",
                 "content": "Full article content goes here...",
                 "image": "https://example.com/images/news.jpg",
-                "source": "example.com"
+                "source": "example.com",
             }
         }
