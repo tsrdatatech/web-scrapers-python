@@ -11,9 +11,9 @@ import newspaper
 import trafilatura
 from playwright.async_api import Page
 
-from core.base_parser import BaseParser
-from core.logger import logger
-from schemas.news import NewsArticle
+from src.core.base_parser import BaseParser
+from src.core.logger import logger
+from src.schemas.news import NewsArticle
 
 
 class GenericNewsParser(BaseParser):

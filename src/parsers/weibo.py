@@ -8,8 +8,8 @@ from typing import Any, Dict, Optional
 from playwright.async_api import Page
 from pydantic import BaseModel, Field, HttpUrl
 
-from core.base_parser import BaseParser
-from core.logger import logger
+from src.core.base_parser import BaseParser
+from src.core.logger import logger
 
 
 class WeiboPost(BaseModel):

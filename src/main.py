@@ -1,5 +1,10 @@
 """
-Main entry point for the Universal Web Scraper.
+Main entry poinfrom src.core.logger import logger
+from src.core.parser_manager import ParserManager
+from src.core.parser_registry import create_parser_registry
+from src.core.proxy_config import create_proxy_configuration
+from src.core.seeds import resolve_seeds
+from src.routes import create_routerthe Universal Web Scraper.
 """
 
 import argparse

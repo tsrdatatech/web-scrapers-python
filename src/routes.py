@@ -4,9 +4,9 @@ Request routing and handling for the Crawlee crawler.
 
 from crawlee.router import Router
 
-from core.logger import logger
-from core.parser_manager import ParserManager
-from core.parser_registry import ParserRegistry
+from src.core.logger import logger
+from src.core.parser_manager import ParserManager
+from src.core.parser_registry import ParserRegistry
 
 
 def build_router(registry: ParserRegistry, manager: ParserManager) -> Router:
