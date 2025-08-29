@@ -7,7 +7,11 @@ from unittest.mock import Mock, patch
 import pytest
 
 try:
-    from src.database.cassandra_manager import CassandraConfig, CassandraManager, CASSANDRA_AVAILABLE
+    from src.database.cassandra_manager import (
+        CASSANDRA_AVAILABLE,
+        CassandraConfig,
+        CassandraManager,
+    )
     from src.schemas.news import NewsArticle
 except ImportError:
     CASSANDRA_AVAILABLE = False

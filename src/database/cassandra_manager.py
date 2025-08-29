@@ -13,21 +13,23 @@ from typing import Any, Dict, List, Optional
 try:
     from cassandra.auth import PlainTextAuthProvider
     from cassandra.cluster import Cluster
+
     CASSANDRA_AVAILABLE = True
 except ImportError:
     # Cassandra driver not available - create dummy classes for testing
     CASSANDRA_AVAILABLE = False
-    
+
     class PlainTextAuthProvider:
         def __init__(self, *args, **kwargs):
             pass
-    
+
     class Cluster:
         def __init__(self, *args, **kwargs):
             pass
-        
+
         def connect(self):
             raise RuntimeError("Cassandra driver not installed")
+
 
 from src.core.logger import logger
 from src.schemas.news import NewsArticle
