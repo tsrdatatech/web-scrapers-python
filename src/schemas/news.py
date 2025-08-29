@@ -3,7 +3,7 @@ Pydantic schemas for news articles and related data structures.
 """
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, Any, Dict
 
 from pydantic import BaseModel, Field, HttpUrl
 
@@ -20,6 +20,9 @@ class NewsArticle(BaseModel):
     content: Optional[str] = Field(None, description="Full article content")
     image: Optional[HttpUrl] = Field(None, description="Featured image URL")
     source: Optional[str] = Field(None, description="Source domain/publication")
+    
+    # AI Analysis Results (Optional) - stored as dict to avoid circular imports
+    ai_analysis: Optional[Dict[str, Any]] = Field(None, description="AI-powered content analysis results")
 
     class Config:
         """Pydantic model configuration."""

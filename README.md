@@ -30,6 +30,7 @@ This project demonstrates enterprise-level software design patterns:
 
 ## 🚀 Technical Stack
 
+- **AI/ML Framework**: LangChain with prompt engineering and structured output parsing
 - **Browser Automation**: Crawlee + Playwright for sophisticated queue management
 - **Data Validation**: Pydantic v2 with advanced type checking and serialization
 - **Content Extraction**: Multi-method approach (Newspaper3k + Trafilatura + custom)
@@ -54,6 +55,14 @@ This project demonstrates enterprise-level software design patterns:
 - **Modern Features**: Context managers, decorators, dataclasses, and type hints
 - **Data Validation**: Runtime type checking with Pydantic schemas
 - **Error Handling**: Comprehensive exception management with graceful degradation
+
+### AI/ML Engineering with LangChain
+- **Content Analysis**: AI-powered article summarization and sentiment analysis
+- **Topic Classification**: Automated topic extraction and entity recognition
+- **Quality Assessment**: Intelligent content quality scoring and readability analysis
+- **Prompt Engineering**: Sophisticated LangChain prompt templates and output parsing
+- **Fallback Systems**: Graceful degradation when AI services are unavailable
+- **Mock Integration**: Development-friendly mock LLM for testing and demonstration
 
 ### Advanced Kubernetes Orchestration
 - **Batch Processing**: Enterprise-grade job orchestration similar to AWS Step Functions + Batch
@@ -82,6 +91,7 @@ This project demonstrates enterprise-level software design patterns:
 
 ## 🏛️ Core Features
 
+- **AI-Enhanced Content Analysis**: LangChain-powered summarization, sentiment analysis, and topic classification
 - **Multi-Parser Architecture**: Automatic parser selection based on URL fingerprinting
 - **Advanced Kubernetes Orchestration**: Enterprise-grade batch processing with auto-scaling
 - **Production Pipelines**: Complete CI/CD with automated testing, building, and deployment
@@ -106,6 +116,33 @@ class BaseParser:
         """Core extraction logic with type safety"""
 ```
 
+### AI-Powered Content Analysis  
+```python
+# LangChain integration for intelligent content analysis
+from langchain_core.prompts import PromptTemplate
+from langchain_community.llms import FakeListLLM
+
+class AdvancedContentAnalyzer:
+    def __init__(self):
+        self.summary_prompt = PromptTemplate(
+            input_variables=["title", "content"],
+            template="Analyze this article and provide a concise summary..."
+        )
+        
+    async def analyze_article(self, article: NewsArticle) -> ContentAnalysis:
+        """AI-powered analysis with sentiment, topics, and quality scoring"""
+        analysis = await self.llm.ainvoke({
+            "title": article.title, 
+            "content": article.content
+        })
+        return ContentAnalysis(
+            summary=analysis.summary,
+            sentiment=analysis.sentiment,
+            topics=analysis.topics,
+            quality_score=self.calculate_quality_score(article)
+        )
+```
+
 ### Data Validation Pipeline
 ```python
 # Pydantic v2 schema with advanced validation
@@ -115,6 +152,7 @@ class NewsArticle(BaseModel):
     url: HttpUrl
     published_date: Optional[datetime] = None
     author: Optional[str] = Field(None, max_length=200)
+    ai_analysis: Optional[Dict[str, Any]] = None  # AI insights
     
     @field_validator('content')
     @classmethod
@@ -268,4 +306,4 @@ jobs:
 
 ## 🔧 Technical Keywords
 
-`Python` • `Async/Await` • `Pydantic` • `Playwright` • `Docker` • `Kubernetes` • `GitHub Actions` • `Test-Driven Development` • `Clean Architecture` • `Design Patterns` • `Type Safety` • `CI/CD` • `Container Orchestration` • `Web Scraping` • `Parser Registry` • `Strategy Pattern`
+`Python` • `LangChain` • `AI/ML Engineering` • `Async/Await` • `Pydantic` • `Playwright` • `Docker` • `Kubernetes` • `GitHub Actions` • `Test-Driven Development` • `Clean Architecture` • `Design Patterns` • `Type Safety` • `CI/CD` • `Container Orchestration` • `Web Scraping` • `Parser Registry` • `Strategy Pattern` • `Prompt Engineering` • `Content Analysis`

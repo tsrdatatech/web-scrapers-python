@@ -12,6 +12,11 @@ aiofiles>=23.0.0
 kubernetes>=29.0.0
 structlog>=23.2.0
 
+# LangChain AI/ML dependencies
+langchain>=0.3.27
+langchain-community>=0.3.29
+langchain-huggingface>=0.3.1
+
 # Development dependencies
 pytest>=7.4.0
 pytest-asyncio>=0.21.0
