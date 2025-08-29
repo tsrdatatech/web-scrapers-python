@@ -8,7 +8,7 @@ import json
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster
@@ -28,7 +28,7 @@ class CassandraConfig:
     password: Optional[str] = None
     replication_factor: int = 1
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.hosts is None:
             self.hosts = ["127.0.0.1"]
 
@@ -49,7 +49,7 @@ class CassandraManager:
         self.config = config
         self.cluster = None
         self.session = None
-        self._prepared_statements = {}
+        self._prepared_statements: Dict[str, Any] = {}
 
     async def connect(self) -> None:
         """Establish connection to Cassandra cluster."""
