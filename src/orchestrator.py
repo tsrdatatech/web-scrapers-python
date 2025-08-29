@@ -8,13 +8,12 @@ similar to AWS Step Functions + Batch but using pure K8s primitives.
 
 import asyncio
 import json
-import logging
 import os
 import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional
 
 try:
     from kubernetes import client
@@ -55,7 +54,7 @@ logger = structlog.get_logger()
 class OrchestratorConfig:
     """Configuration for the batch orchestrator"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.batch_size = int(os.getenv("BATCH_SIZE", "5"))
         self.max_concurrent_jobs = int(os.getenv("MAX_CONCURRENT_JOBS", "20"))
         self.job_timeout = int(os.getenv("JOB_TIMEOUT", "600"))  # 10 minutes
@@ -300,7 +299,7 @@ class BatchOrchestrator:
             manifest = self.create_job_manifest(job)
 
             # Create the job
-            result = self.batch_v1.create_namespaced_job(
+            self.batch_v1.create_namespaced_job(
                 namespace=self.config.namespace, body=manifest
             )
 
@@ -387,7 +386,8 @@ class BatchOrchestrator:
                                 batch_id=job_info.batch_id,
                                 retry_count=job_info.retry_count,
                             )
-                            # Re-queue for retry (simplified - could be more sophisticated)
+                            # Re-queue for retry
+                            # (simplified - could be more sophisticated)
                             del self.active_jobs[job_name]
                             await self.create_batch_job(
                                 job_info.batch_id, job_info.urls, job_info.parser
@@ -529,7 +529,7 @@ class BatchOrchestrator:
         }
 
 
-async def main():
+async def main() -> None:
     """Main entry point for the orchestrator"""
     import argparse
 

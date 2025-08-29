@@ -3,7 +3,6 @@ Enhanced parser manager with Cassandra integration.
 Provides persistent storage, deduplication, and seed management.
 """
 
-from datetime import datetime
 from typing import Dict, List, Optional
 
 from src.core.logger import logger

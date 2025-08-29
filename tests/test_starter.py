@@ -75,14 +75,12 @@ class TestProjectSetup:
 class TestNewsSchemaIntegration:
     """Test NewsArticle schema integration."""
 
-    def test_news_article_import(self):
-        """Test that NewsArticle can be imported."""
-        try:
-            from src.schemas.news import NewsArticle
+    def test_imports_working(self):
+        """Test that basic imports work."""
+        # Test core imports
+        from src.core.logger import logger
 
-            assert NewsArticle is not None
-        except ImportError:
-            pytest.skip("NewsArticle schema not available - install dependencies")
+        assert logger is not None
 
     def test_news_article_basic_usage(self):
         """Test basic NewsArticle usage if available."""
@@ -216,4 +214,6 @@ def test_project_structure():
 
 if __name__ == "__main__":
     # Allow running this file directly for quick testing
+    import pytest
+
     pytest.main([__file__, "-v"])

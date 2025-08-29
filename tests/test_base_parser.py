@@ -2,7 +2,6 @@
 Tests for the BaseParser abstract class and parser functionality.
 """
 
-from abc import ABC
 from unittest.mock import AsyncMock, Mock
 
 import pytest

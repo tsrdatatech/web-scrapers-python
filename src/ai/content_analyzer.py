@@ -8,15 +8,12 @@ This module demonstrates advanced LangChain integration for:
 - Language detection and readability scoring
 """
 
-import logging
 import re
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 try:
-    from langchain.schema import BaseMessage, HumanMessage
     from langchain_community.llms import FakeListLLM
-    from langchain_core.output_parsers import PydanticOutputParser
     from langchain_core.prompts import PromptTemplate
 
     LANGCHAIN_AVAILABLE = True
@@ -68,7 +65,7 @@ class ContentAnalysis(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "summary": "Breaking news about a major technology advancement in artificial intelligence.",
+                "summary": "Breaking news about a major technology advancement.",
                 "sentiment": "positive",
                 "confidence": 0.87,
                 "quality_score": 8.2,
@@ -112,11 +109,19 @@ class AdvancedContentAnalyzer:
             # Use mock responses for portfolio demonstration
             mock_responses = [
                 # Summary response
-                "This article discusses a major breakthrough in artificial intelligence technology that could revolutionize various industries. The development represents a significant step forward in machine learning capabilities.",
+                (
+                    "This article discusses a major breakthrough in artificial "
+                    "intelligence technology that could revolutionize various "
+                    "industries. The development represents a significant step "
+                    "forward in machine learning capabilities."
+                ),
                 # Sentiment analysis
                 "positive",
                 # Topic classification
-                "technology, artificial intelligence, innovation, machine learning, breakthrough",
+                (
+                    "technology, artificial intelligence, innovation, "
+                    "machine learning, breakthrough"
+                ),
                 # Entity extraction
                 "OpenAI, GPT-4, Sam Altman, Silicon Valley, Stanford University",
                 # Quality assessment
@@ -138,10 +143,10 @@ class AdvancedContentAnalyzer:
             input_variables=["title", "content"],
             template="""
             Analyze this article and provide a concise 2-3 sentence summary:
-            
+
             Title: {title}
             Content: {content}
-            
+
             Summary:
             """,
         )
@@ -151,10 +156,10 @@ class AdvancedContentAnalyzer:
             template="""
             Analyze the sentiment of this article. Respond with exactly one word:
             positive, negative, neutral, or mixed
-            
+
             Title: {title}
             Content: {content}
-            
+
             Sentiment:
             """,
         )
@@ -164,10 +169,10 @@ class AdvancedContentAnalyzer:
             template="""
             Identify the main topics/categories for this article.
             Provide up to 5 topics as comma-separated values.
-            
+
             Title: {title}
             Content: {content}
-            
+
             Topics:
             """,
         )

@@ -3,19 +3,15 @@ Cassandra database integration for web scraper.
 Provides data persistence, deduplication, and seed management.
 """
 
-import asyncio
 import hashlib
 import json
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional
 
-import aiohttp
 from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster
-from cassandra.io.asyncorereactor import AsyncoreConnection
-from cassandra.query import SimpleStatement
 
 from src.core.logger import logger
 from src.schemas.news import NewsArticle
@@ -202,11 +198,11 @@ class CassandraManager:
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             "check_url_exists": """
-                SELECT url_hash, last_article_id, status 
+                SELECT url_hash, last_article_id, status
                 FROM url_tracker WHERE url_hash = ?
             """,
             "update_url_tracker": """
-                UPDATE url_tracker SET 
+                UPDATE url_tracker SET
                     last_seen = ?, scrape_count = scrape_count + 1,
                     last_article_id = ?, status = ?
                 WHERE url_hash = ?
@@ -460,7 +456,7 @@ class CassandraManager:
 
             query = """
                 SELECT metric_type, SUM(count) as total
-                FROM crawl_stats 
+                FROM crawl_stats
                 WHERE date >= ? AND date <= ?
                 GROUP BY metric_type
             """

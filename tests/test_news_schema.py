@@ -5,7 +5,7 @@ Tests for the NewsArticle schema and validation.
 from datetime import datetime
 
 import pytest
-from pydantic import HttpUrl, ValidationError
+from pydantic import ValidationError
 
 from src.schemas.news import NewsArticle
 

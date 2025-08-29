@@ -6,7 +6,6 @@ from datetime import datetime
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-from pydantic import ValidationError
 
 from src.parsers.generic_news import GenericNewsParser
 from src.schemas.news import NewsArticle

@@ -26,7 +26,7 @@ def build_router(registry: ParserRegistry, manager: ParserManager) -> Router:
     async def default_handler(context) -> None:
         """Default handler: enqueue links from start URLs using provided selector."""
         request = context.request
-        page = context.page
+        # page = context.page  # Page available if needed for link discovery
         enqueue_links = context.enqueue_links
         log = context.log
 

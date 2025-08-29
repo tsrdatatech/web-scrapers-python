@@ -2,8 +2,6 @@
 Tests for parser registry functionality.
 """
 
-from unittest.mock import AsyncMock, Mock
-
 import pytest
 
 from src.core.base_parser import BaseParser
@@ -20,7 +18,7 @@ class MockParser(BaseParser):
         return "example.com" in url
 
     async def parse(self, page, context):
-        return {"title": "Mock Article", "url": url}
+        return {"title": "Mock Article", "url": "https://example.com/test"}
 
 
 class TestParserRegistry:

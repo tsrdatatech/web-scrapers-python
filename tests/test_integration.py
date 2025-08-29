@@ -248,8 +248,6 @@ class TestCommandLineInterface:
 
     def test_output_formatting(self):
         """Test output formatting and serialization."""
-        from datetime import datetime
-
         from src.schemas.news import NewsArticle
 
         # Create test article

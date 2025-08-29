@@ -1,5 +1,8 @@
 """
-Main entry point for the Universal Web Scraper.
+Main entry point for the web scraper application.
+
+This module provides the main function and CLI interface for running
+the web scraper with various configuration options.
 """
 
 import argparse
@@ -9,27 +12,20 @@ import sys
 from datetime import timedelta
 from pathlib import Path
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
-
 from crawlee import ConcurrencySettings, Request
 from crawlee.crawlers import PlaywrightCrawler
 from crawlee.fingerprint_suite import DefaultFingerprintGenerator
-from crawlee.playwright_crawler import PlaywrightCrawler
 from dotenv import load_dotenv
 
-from core.logger import logger
-from core.parser_manager import ParserManager
-from core.parser_registry import create_parser_registry
-from core.proxy_config import create_proxy_configuration
-from core.seeds import resolve_seeds
-from routes import build_router
-from src.core.logger import logger
-from src.core.parser_manager import ParserManager
-from src.core.parser_registry import create_parser_registry
-from src.core.proxy_config import create_proxy_configuration
-from src.core.seeds import resolve_seeds
-from src.routes import create_router
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+from src.core.logger import logger  # noqa: E402
+from src.core.parser_manager import ParserManager  # noqa: E402
+from src.core.parser_registry import create_parser_registry  # noqa: E402
+from src.core.proxy_config import create_proxy_configuration  # noqa: E402
+from src.core.seeds import resolve_seeds  # noqa: E402
+from src.routes import build_router  # noqa: E402
 
 
 async def main() -> None:

@@ -2,8 +2,6 @@
 Simple end-to-end tests for basic functionality.
 """
 
-from unittest.mock import Mock, patch
-
 import pytest
 
 from src.core.parser_registry import ParserRegistry
@@ -111,7 +109,8 @@ class TestErrorHandling:
         failing_page = AsyncMock()
         failing_page.wait_for_load_state.side_effect = Exception("Page failed")
 
-        # Parser should handle gracefully (this would need actual error handling in parser)
+        # Parser should handle gracefully
+        # (this would need actual error handling in parser)
         try:
             result = await failing_parser.parse(failing_page, mock_context)
             # If no exception handling, this might raise

@@ -45,7 +45,8 @@ class WeiboParser(BaseParser):
         try:
             await page.wait_for_load_state("domcontentloaded")
 
-            # Extract post content (simplified selectors - real Weibo requires more complex handling)
+            # Extract post content
+            # (simplified selectors - real Weibo requires more complex handling)
             content = await self._safe_text_content(
                 page, "article, .Detail_container__content, .card-comment, body"
             )

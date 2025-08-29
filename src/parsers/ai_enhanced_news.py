@@ -10,7 +10,6 @@ from typing import Any, Dict, Optional
 from playwright.async_api import Page
 
 from src.ai.content_analyzer import create_content_analyzer
-from src.core.base_parser import BaseParser
 from src.core.logger import logger
 from src.parsers.generic_news import GenericNewsParser
 from src.schemas.news import NewsArticle
@@ -99,9 +98,8 @@ class AIEnhancedNewsParser(GenericNewsParser):
             return article
 
         except Exception as e:
-            logger.error(
-                f"AI-enhanced parsing failed for {context.get('request', {}).get('url', 'unknown')}: {e}"
-            )
+            url = context.get("request", {}).get("url", "unknown")
+            logger.error(f"AI-enhanced parsing failed for {url}: {e}")
             return None
 
     async def can_parse(
