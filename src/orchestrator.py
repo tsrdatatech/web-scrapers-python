@@ -272,7 +272,8 @@ class BatchOrchestrator:
                                     "capabilities": {"drop": ["ALL"]},
                                 },
                                 "volumeMounts": [
-                                    {"name": "tmp", "mountPath": "/tmp"},
+                                    # nosec B108: Kubernetes requires explicit tmp directory for pod security
+                                    {"name": "tmp", "mountPath": "/tmp"},  # nosec
                                     {"name": "cache", "mountPath": "/app/.cache"},
                                 ],
                             }
