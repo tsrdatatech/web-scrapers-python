@@ -94,9 +94,7 @@ class WeiboParser(BaseParser):
                     text = await element.text_content()
                     if text and text.strip():
                         return text.strip()
-            except (
-                Exception
-            ):  # nosec B112: Intentional broad exception handling for web scraping robustness
+            except Exception:  # nosec B112: Broad exception for web scraping robustness
                 continue
         return None
 

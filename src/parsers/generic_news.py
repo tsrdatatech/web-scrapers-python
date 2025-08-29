@@ -133,7 +133,7 @@ class GenericNewsParser(BaseParser):
                         break
                 except (
                     Exception
-                ):  # nosec B112: Intentional broad exception handling for web scraping robustness
+                ):  # nosec B112: Broad exception for web scraping robustness
                     continue
 
             # Try common content selectors
@@ -157,7 +157,7 @@ class GenericNewsParser(BaseParser):
                         break
                 except (
                     Exception
-                ):  # nosec B112: Intentional broad exception handling for web scraping robustness
+                ):  # nosec B112: Broad exception for web scraping robustness
                     continue
 
             # Try to get page title if no article title found
