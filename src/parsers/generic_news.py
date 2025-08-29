@@ -131,7 +131,9 @@ class GenericNewsParser(BaseParser):
                     if title and title.strip():
                         data["title"] = title.strip()
                         break
-                except Exception:  # nosec B112: Intentional broad exception handling for web scraping robustness
+                except (
+                    Exception
+                ):  # nosec B112: Intentional broad exception handling for web scraping robustness
                     continue
 
             # Try common content selectors
@@ -153,7 +155,9 @@ class GenericNewsParser(BaseParser):
                             :10000
                         ]  # Limit content length
                         break
-                except Exception:  # nosec B112: Intentional broad exception handling for web scraping robustness
+                except (
+                    Exception
+                ):  # nosec B112: Intentional broad exception handling for web scraping robustness
                     continue
 
             # Try to get page title if no article title found
