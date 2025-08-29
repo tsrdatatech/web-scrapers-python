@@ -3,6 +3,9 @@ kind: ConfigMap
 metadata:
   name: web-scraper-python-config
   namespace: web-scraper-python
+  labels:
+    app: web-scraper-python
+    component: config
 data:
   # Python-specific environment variables
   PYTHONUNBUFFERED: '1'
@@ -12,8 +15,50 @@ data:
   # Application configuration
   LOG_LEVEL: 'INFO'
   NODE_ENV: 'production'
-  DEFAULT_PARSER: 'generic-news'
+  DEFAULT_PARSER: 'generic_news'
   MAX_CONCURRENT_REQUESTS: '5'
 
   # Playwright configuration
   PLAYWRIGHT_BROWSERS_PATH: '/app/.cache/ms-playwright'
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scraper-seeds
+  namespace: web-scraper-python
+  labels:
+    app: web-scraper-python
+    component: seeds
+data:
+  seeds.txt: |
+    # Generic News Sources
+    https://news.ycombinator.com/
+    https://www.reuters.com/
+    https://www.bbc.com/news
+    https://www.theguardian.com/international
+    https://edition.cnn.com/
+    https://www.npr.org/
+    https://apnews.com/
+    https://www.wsj.com/
+    https://www.nytimes.com/
+    https://www.washingtonpost.com/
+    
+  seeds-generic-news.txt: |
+    # Dedicated generic news sources
+    https://news.ycombinator.com/
+    https://www.reuters.com/world
+    https://www.bbc.com/news/world
+    https://www.theguardian.com/world
+    https://edition.cnn.com/world
+    
+  seeds-weibo.txt: |
+    # Weibo trending topics and hashtags
+    https://weibo.com/hot/search
+    https://weibo.com/
+    
+  test-urls.txt: |
+    # Test URLs for development
+    https://httpbin.org/html
+    https://httpbin.org/json
+    https://example.com

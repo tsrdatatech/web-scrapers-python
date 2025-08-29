@@ -99,11 +99,9 @@ class ParserManager:
                     if "text/html" in content_type:
                         return True
             else:
-                # If httpx not available, assume it might be news
                 return True
 
         except Exception:
-            # If we can't check, assume it might be news
             return True
 
         return False

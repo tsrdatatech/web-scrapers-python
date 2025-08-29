@@ -1,0 +1,168 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: batch-orchestrator
+  namespace: web-scraper-python
+  labels:
+    app: batch-orchestrator
+    component: orchestration
+    version: v1
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: batch-orchestrator
+  template:
+    metadata:
+      labels:
+        app: batch-orchestrator
+        component: orchestration
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: scraper-orchestrator
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: orchestrator
+          image: universal-web-scraper-python:latest
+          imagePullPolicy: IfNotPresent
+          command: ['python', '-m', 'src.orchestrator']
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: LOG_LEVEL
+            - name: BATCH_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: BATCH_SIZE
+            - name: MAX_CONCURRENT_JOBS
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: MAX_CONCURRENT_JOBS
+            - name: JOB_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: JOB_TIMEOUT
+            - name: POLL_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: POLL_INTERVAL
+            - name: DEFAULT_PARSER
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: DEFAULT_PARSER
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SCRAPER_IMAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: SCRAPER_IMAGE
+            - name: JOB_MEMORY_REQUEST
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: JOB_MEMORY_REQUEST
+            - name: JOB_MEMORY_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: JOB_MEMORY_LIMIT
+            - name: JOB_CPU_REQUEST
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: JOB_CPU_REQUEST
+            - name: JOB_CPU_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: orchestrator-config
+                  key: JOB_CPU_LIMIT
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '200m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: cache
+              mountPath: /app/.cache
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: batch-orchestrator
+  namespace: web-scraper-python
+  labels:
+    app: batch-orchestrator
+    component: orchestration
+spec:
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: batch-orchestrator

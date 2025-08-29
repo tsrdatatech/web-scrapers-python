@@ -46,7 +46,6 @@ class GenericNewsParser(BaseParser):
         url = request.loaded_url or request.url
 
         try:
-            # Wait for page to load
             await page.wait_for_load_state("domcontentloaded")
 
             # Try multiple extraction methods

@@ -1,0 +1,275 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scraper-generic-news
+  namespace: web-scraper-python
+  labels:
+    app: web-scraper-python
+    component: scheduled-scraper
+    parser: generic-news
+spec:
+  # Schedule: every hour at minute 0
+  schedule: "0 * * * *"
+  
+  # Concurrency settings
+  concurrencyPolicy: Forbid           # Don't run concurrent jobs
+  startingDeadlineSeconds: 600        # 10 minutes to start
+  successfulJobsHistoryLimit: 2       # Keep 2 successful jobs
+  failedJobsHistoryLimit: 5          # Keep 5 failed jobs for debugging
+  
+  jobTemplate:
+    spec:
+      # Job settings
+      ttlSecondsAfterFinished: 3600   # 1 hour cleanup
+      activeDeadlineSeconds: 3600     # 1 hour timeout
+      backoffLimit: 1                 # Single retry for cron jobs
+      
+      template:
+        metadata:
+          labels:
+            app: web-scraper-python
+            component: scheduled-scraper
+            parser: generic-news
+          annotations:
+            scheduler: "kubernetes-cronjob"
+            sidecar.istio.io/inject: "false"
+        spec:
+          restartPolicy: OnFailure
+          
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            runAsGroup: 1001
+            fsGroup: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          
+          containers:
+            - name: scraper
+              image: universal-web-scraper-python:latest
+              imagePullPolicy: IfNotPresent
+              
+              command: ['python', '-m', 'src.main']
+              args:
+                - '--parser=generic_news'
+                - '--seed-file=seeds.txt'
+                - '--max-concurrency=4'
+                - '--scheduled-run'
+              
+              env:
+                # Python configuration
+                - name: PYTHONUNBUFFERED
+                  value: "1"
+                - name: PYTHONDONTWRITEBYTECODE
+                  value: "1"
+                - name: PYTHONPATH
+                  value: "/app"
+                
+                # Application configuration
+                - name: LOG_LEVEL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: web-scraper-python-config
+                      key: LOG_LEVEL
+                - name: NODE_ENV
+                  valueFrom:
+                    configMapKeyRef:
+                      name: web-scraper-python-config
+                      key: NODE_ENV
+                - name: DEFAULT_PARSER
+                  valueFrom:
+                    configMapKeyRef:
+                      name: web-scraper-python-config
+                      key: DEFAULT_PARSER
+                - name: MAX_CONCURRENT_REQUESTS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: web-scraper-python-config
+                      key: MAX_CONCURRENT_REQUESTS
+                
+                # Playwright configuration
+                - name: PLAYWRIGHT_BROWSERS_PATH
+                  value: "/app/.cache/ms-playwright"
+                
+                # Cron job metadata
+                - name: CRON_JOB_NAME
+                  value: "scraper-generic-news"
+                - name: PARSER_TYPE
+                  value: "generic_news"
+              
+              resources:
+                requests:
+                  memory: '1Gi'
+                  cpu: '500m'
+                  ephemeral-storage: '2Gi'
+                limits:
+                  memory: '2Gi'
+                  cpu: '1'
+                  ephemeral-storage: '4Gi'
+              
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+              
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: cache
+                  mountPath: /app/.cache
+                - name: playwright-cache
+                  mountPath: /app/.cache/ms-playwright
+                - name: seed-files
+                  mountPath: /app/seeds
+                  readOnly: true
+          
+          volumes:
+            - name: tmp
+              emptyDir:
+                sizeLimit: 200Mi
+            - name: cache
+              emptyDir:
+                sizeLimit: 1Gi
+            - name: playwright-cache
+              emptyDir:
+                sizeLimit: 2Gi
+            - name: seed-files
+              configMap:
+                name: scraper-seeds
+                optional: true
+          
+          # Node selection for scheduled jobs
+          nodeSelector:
+            workload-type: "general"
+          
+          tolerations:
+            - key: "scheduled-workload"
+              operator: "Equal"
+              value: "true"
+              effect: "NoSchedule"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scraper-weibo
+  namespace: web-scraper-python
+  labels:
+    app: web-scraper-python
+    component: scheduled-scraper
+    parser: weibo
+spec:
+  # Schedule: every 2 hours at minute 30
+  schedule: "30 */2 * * *"
+  
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 5
+  
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 3600
+      activeDeadlineSeconds: 3600
+      backoffLimit: 1
+      
+      template:
+        metadata:
+          labels:
+            app: web-scraper-python
+            component: scheduled-scraper
+            parser: weibo
+          annotations:
+            scheduler: "kubernetes-cronjob"
+            sidecar.istio.io/inject: "false"
+        spec:
+          restartPolicy: OnFailure
+          
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            runAsGroup: 1001
+            fsGroup: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          
+          containers:
+            - name: scraper
+              image: universal-web-scraper-python:latest
+              imagePullPolicy: IfNotPresent
+              
+              command: ['python', '-m', 'src.main']
+              args:
+                - '--parser=weibo'
+                - '--seed-file=seeds.txt'
+                - '--max-concurrency=3'
+                - '--scheduled-run'
+              
+              env:
+                - name: PYTHONUNBUFFERED
+                  value: "1"
+                - name: PYTHONDONTWRITEBYTECODE
+                  value: "1"
+                - name: PYTHONPATH
+                  value: "/app"
+                - name: LOG_LEVEL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: web-scraper-python-config
+                      key: LOG_LEVEL
+                - name: NODE_ENV
+                  valueFrom:
+                    configMapKeyRef:
+                      name: web-scraper-python-config
+                      key: NODE_ENV
+                - name: PLAYWRIGHT_BROWSERS_PATH
+                  value: "/app/.cache/ms-playwright"
+                - name: CRON_JOB_NAME
+                  value: "scraper-weibo"
+                - name: PARSER_TYPE
+                  value: "weibo"
+              
+              resources:
+                requests:
+                  memory: '768Mi'
+                  cpu: '300m'
+                  ephemeral-storage: '1Gi'
+                limits:
+                  memory: '1.5Gi'
+                  cpu: '800m'
+                  ephemeral-storage: '3Gi'
+              
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+              
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                - name: cache
+                  mountPath: /app/.cache
+                - name: playwright-cache
+                  mountPath: /app/.cache/ms-playwright
+                - name: seed-files
+                  mountPath: /app/seeds
+                  readOnly: true
+          
+          volumes:
+            - name: tmp
+              emptyDir:
+                sizeLimit: 200Mi
+            - name: cache
+              emptyDir:
+                sizeLimit: 1Gi
+            - name: playwright-cache
+              emptyDir:
+                sizeLimit: 2Gi
+            - name: seed-files
+              configMap:
+                name: scraper-seeds
+                optional: true

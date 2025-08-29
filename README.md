@@ -55,6 +55,14 @@ This project demonstrates enterprise-level software design patterns:
 - **Data Validation**: Runtime type checking with Pydantic schemas
 - **Error Handling**: Comprehensive exception management with graceful degradation
 
+### Advanced Kubernetes Orchestration
+- **Batch Processing**: Enterprise-grade job orchestration similar to AWS Step Functions + Batch
+- **Auto-scaling**: Dynamic resource allocation with horizontal and vertical scaling
+- **Job Management**: Sophisticated job lifecycle management with automatic retries
+- **Monitoring**: Built-in metrics, structured logging, and health checks
+- **Security**: Pod security standards, RBAC, and minimal privilege execution
+- **Reliability**: Failure recovery, resource cleanup, and graceful degradation
+
 ### Testing & Quality Assurance
 - **Test-Driven Development**: 26+ automated tests covering multiple scenarios
 - **Integration Testing**: End-to-end workflow validation
@@ -75,8 +83,9 @@ This project demonstrates enterprise-level software design patterns:
 ## 🏛️ Core Features
 
 - **Multi-Parser Architecture**: Automatic parser selection based on URL fingerprinting
+- **Advanced Kubernetes Orchestration**: Enterprise-grade batch processing with auto-scaling
 - **Production Pipelines**: Complete CI/CD with automated testing, building, and deployment
-- **Container Orchestration**: Kubernetes-ready with multi-stage Docker builds
+- **Container Orchestration**: Kubernetes-ready with sophisticated job management
 - **Type-Safe Data Models**: Pydantic v2 schemas with comprehensive validation
 - **Async Content Extraction**: High-performance processing with Playwright automation
 - **Enterprise Monitoring**: Structured logging with contextual error tracking
@@ -114,11 +123,58 @@ class NewsArticle(BaseModel):
         return v.strip()
 ```
 
+## ☸️ Kubernetes Orchestration
+
+Advanced batch processing system using pure Kubernetes primitives:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Kubernetes Orchestration                     │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────┐    ┌──────────────────┐    ┌─────────────┐ │
+│  │ Batch           │    │ CronJob          │    │ Manual      │ │
+│  │ Orchestrator    │───▶│ Schedulers       │    │ Jobs        │ │
+│  └─────────────────┘    └──────────────────┘    └─────────────┘ │
+│           │                                              │       │
+│           ▼                                              ▼       │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │              Kubernetes Job Execution Layer                │ │
+│  │ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────┐ │ │
+│  │ │ Scraper     │ │ Scraper     │ │ Scraper     │ │   ...   │ │ │
+│  │ │ Job Pod 1   │ │ Job Pod 2   │ │ Job Pod 3   │ │         │ │ │
+│  │ └─────────────┘ └─────────────┘ └─────────────┘ └─────────┘ │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Orchestration Features
+- **Batch Processing**: URL batching with configurable chunk sizes
+- **Job Lifecycle Management**: Automatic creation, monitoring, and cleanup
+- **Failure Recovery**: Intelligent retry logic with exponential backoff
+- **Resource Management**: Dynamic scaling and resource optimization
+- **Security**: Pod security standards and RBAC implementation
+- **Monitoring**: Structured logging, metrics, and health checks
+
+### Quick Deploy
+```bash
+# Deploy complete orchestration system
+make deploy
+
+# Monitor batch processing
+make status
+make logs
+
+# Scale operations
+make scale-up
+make job-batch
+```
+
 ## 🏗️ System Architecture
 
 ```
 src/
 ├── main.py                 # Application entry point
+├── orchestrator.py         # Kubernetes batch orchestrator
 ├── routes.py              # Crawlee request routing logic
 ├── core/
 │   ├── base_parser.py     # Abstract parser base class
@@ -132,6 +188,13 @@ src/
 │   └── weibo.py           # Social media specialized parser
 └── schemas/
     └── news.py            # Type-safe data models
+
+deployment/kubernetes/
+├── batch-orchestrator.yaml    # Orchestrator deployment
+├── job-template.yaml         # Batch job templates
+├── cronjobs.yaml            # Scheduled operations
+├── orchestrator-config.yaml # RBAC and configuration
+└── deploy.sh               # Automated deployment
 ```
 
 ## 🔬 Testing Framework

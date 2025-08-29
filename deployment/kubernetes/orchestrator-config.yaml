@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orchestrator-config
+  namespace: web-scraper-python
+  labels:
+    app: web-scraper-python
+    component: orchestrator
+data:
+  # Orchestrator settings
+  LOG_LEVEL: "INFO"
+  BATCH_SIZE: "5"
+  MAX_CONCURRENT_JOBS: "20"
+  JOB_TIMEOUT: "600"  # 10 minutes
+  POLL_INTERVAL: "10"  # 10 seconds
+  DEFAULT_PARSER: "generic_news"
+  MAX_RETRIES: "3"
+  JOB_TTL: "300"  # 5 minutes cleanup
+  
+  # Image configuration
+  SCRAPER_IMAGE: "universal-web-scraper-python:latest"
+  
+  # Resource configuration for jobs
+  JOB_MEMORY_REQUEST: "512Mi"
+  JOB_MEMORY_LIMIT: "1Gi"
+  JOB_CPU_REQUEST: "200m"
+  JOB_CPU_LIMIT: "800m"
+  
+  # Application environment
+  NODE_ENV: "production"
+  PYTHONUNBUFFERED: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: scraper-orchestrator
+  namespace: web-scraper-python
+  labels:
+    app: web-scraper-python
+    component: orchestrator
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: web-scraper-python
+  name: scraper-orchestrator
+  labels:
+    app: web-scraper-python
+    component: orchestrator
+rules:
+  # Job management
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "watch"]
+  
+  # Pod monitoring
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]
+  
+  # ConfigMap access
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+  
+  # Event access for monitoring
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: scraper-orchestrator
+  namespace: web-scraper-python
+  labels:
+    app: web-scraper-python
+    component: orchestrator
+subjects:
+  - kind: ServiceAccount
+    name: scraper-orchestrator
+    namespace: web-scraper-python
+roleRef:
+  kind: Role
+  name: scraper-orchestrator
+  apiGroup: rbac.authorization.k8s.io

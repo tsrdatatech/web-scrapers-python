@@ -30,8 +30,6 @@ def build_router(registry: ParserRegistry, manager: ParserManager) -> Router:
         enqueue_links = context.enqueue_links
         log = context.log
 
-        # Note: Fingerprinting is handled automatically by Crawlee when fingerprint_generator is set
-
         selector = request.label
 
         if not selector:
@@ -66,8 +64,6 @@ def build_router(registry: ParserRegistry, manager: ParserManager) -> Router:
         request = context.request
         page = context.page
         log = context.log
-
-        # Note: Fingerprinting is handled automatically by Crawlee when fingerprint_generator is set
 
         # Select appropriate parser
         forced_parser_id = (

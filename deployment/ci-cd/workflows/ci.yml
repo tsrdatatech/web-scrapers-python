@@ -161,4 +161,3 @@ jobs:
     
     - name: Run bandit security linter
       run: poetry run bandit -r src/
-      continue-on-error: true

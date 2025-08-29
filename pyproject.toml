@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "universal-web-scraper-python"
 version = "0.1.0"
-description = "Generic, extensible web scraper using Crawlee + Playwright with pluggable parsers and Pydantic validation (news + social media examples)."
-authors = ["Your Name <your.email@example.com>"]
+description = "Enterprise-grade web scraper with Kubernetes orchestration, async processing, and pluggable parser architecture."
+authors = ["Tom Thompson <tom@tsrdatatech.com>"]
 readme = "README.md"
 packages = [{include = "src"}]
 
@@ -17,6 +17,8 @@ loguru = "^0.7.0"
 python-dotenv = "^1.0.0"
 httpx = "^0.25.0"
 aiofiles = "^23.0.0"
+kubernetes = "^29.0.0"
+structlog = "^23.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
