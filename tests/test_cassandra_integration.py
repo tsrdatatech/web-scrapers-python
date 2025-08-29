@@ -6,10 +6,15 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.database.cassandra_manager import CassandraConfig, CassandraManager
-from src.schemas.news import NewsArticle
+try:
+    from src.database.cassandra_manager import CassandraConfig, CassandraManager, CASSANDRA_AVAILABLE
+    from src.schemas.news import NewsArticle
+except ImportError:
+    CASSANDRA_AVAILABLE = False
+    pytest.skip("Cassandra driver not available", allow_module_level=True)
 
 
+@pytest.mark.skipif(not CASSANDRA_AVAILABLE, reason="Cassandra driver not installed")
 class TestCassandraManager:
     """Test cases for Cassandra database manager."""
 

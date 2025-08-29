@@ -7,7 +7,17 @@ from typing import Dict, List, Optional
 
 from src.core.logger import logger
 from src.core.parser_manager import ParserManager as BaseParserManager
-from src.database.cassandra_manager import CassandraConfig, CassandraManager
+
+try:
+    from src.database.cassandra_manager import CassandraConfig, CassandraManager, CASSANDRA_AVAILABLE
+except ImportError:
+    CASSANDRA_AVAILABLE = False
+    # Create dummy classes for when Cassandra is not available
+    class CassandraConfig:
+        pass
+    class CassandraManager:
+        pass
+
 from src.schemas.news import NewsArticle
 
 
