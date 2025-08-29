@@ -31,6 +31,7 @@ This project demonstrates enterprise-level software design patterns:
 ## 🚀 Technical Stack
 
 - **AI/ML Framework**: LangChain with prompt engineering and structured output parsing
+- **Database**: Apache Cassandra for distributed data storage and deduplication
 - **Browser Automation**: Crawlee + Playwright for sophisticated queue management
 - **Data Validation**: Pydantic v2 with advanced type checking and serialization
 - **Content Extraction**: Multi-method approach (Newspaper3k + Trafilatura + custom)
@@ -72,6 +73,14 @@ This project demonstrates enterprise-level software design patterns:
 - **Security**: Pod security standards, RBAC, and minimal privilege execution
 - **Reliability**: Failure recovery, resource cleanup, and graceful degradation
 
+### Distributed Database Engineering
+- **Cassandra Integration**: High-performance, scalable NoSQL database for web scraping data
+- **Data Deduplication**: Intelligent URL and content duplicate detection and prevention  
+- **Dynamic Seed Management**: Database-driven crawler seed URL management and prioritization
+- **Time-Series Analytics**: Crawl statistics, performance metrics, and historical data tracking
+- **Content Versioning**: Track article changes over time with automated change detection
+- **Horizontal Scaling**: Distributed architecture supporting multi-node deployments
+
 ### Testing & Quality Assurance
 - **Test-Driven Development**: 26+ automated tests covering multiple scenarios
 - **Integration Testing**: End-to-end workflow validation
@@ -92,6 +101,7 @@ This project demonstrates enterprise-level software design patterns:
 ## 🏛️ Core Features
 
 - **AI-Enhanced Content Analysis**: LangChain-powered summarization, sentiment analysis, and topic classification
+- **Distributed Database Storage**: Cassandra integration with deduplication and analytics
 - **Multi-Parser Architecture**: Automatic parser selection based on URL fingerprinting
 - **Advanced Kubernetes Orchestration**: Enterprise-grade batch processing with auto-scaling
 - **Production Pipelines**: Complete CI/CD with automated testing, building, and deployment
@@ -306,4 +316,4 @@ jobs:
 
 ## 🔧 Technical Keywords
 
-`Python` • `LangChain` • `AI/ML Engineering` • `Async/Await` • `Pydantic` • `Playwright` • `Docker` • `Kubernetes` • `GitHub Actions` • `Test-Driven Development` • `Clean Architecture` • `Design Patterns` • `Type Safety` • `CI/CD` • `Container Orchestration` • `Web Scraping` • `Parser Registry` • `Strategy Pattern` • `Prompt Engineering` • `Content Analysis`
+`Python` • `Apache Cassandra` • `Distributed Systems` • `LangChain` • `AI/ML Engineering` • `Async/Await` • `Pydantic` • `Playwright` • `Docker` • `Kubernetes` • `GitHub Actions` • `Test-Driven Development` • `Clean Architecture` • `Design Patterns` • `Type Safety` • `CI/CD` • `Container Orchestration` • `Web Scraping` • `Parser Registry` • `Strategy Pattern` • `Prompt Engineering` • `Content Analysis` • `Database Engineering` • `Data Deduplication` • `Time-Series Analytics`

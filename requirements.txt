@@ -12,6 +12,10 @@ aiofiles>=23.0.0
 kubernetes>=29.0.0
 structlog>=23.2.0
 
+# Database dependencies  
+cassandra-driver>=3.28.0
+pandas>=2.0.0  # For data analysis and export
+
 # LangChain AI/ML dependencies
 langchain>=0.3.27
 langchain-community>=0.3.29
