@@ -20,9 +20,11 @@ class NewsArticle(BaseModel):
     content: Optional[str] = Field(None, description="Full article content")
     image: Optional[HttpUrl] = Field(None, description="Featured image URL")
     source: Optional[str] = Field(None, description="Source domain/publication")
-    
+
     # AI Analysis Results (Optional) - stored as dict to avoid circular imports
-    ai_analysis: Optional[Dict[str, Any]] = Field(None, description="AI-powered content analysis results")
+    ai_analysis: Optional[Dict[str, Any]] = Field(
+        None, description="AI-powered content analysis results"
+    )
 
     class Config:
         """Pydantic model configuration."""
