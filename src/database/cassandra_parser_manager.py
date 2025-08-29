@@ -3,13 +3,13 @@ Enhanced parser manager with Cassandra integration.
 Provides persistent storage, deduplication, and seed management.
 """
 
-from typing import Dict, List, Optional
 from datetime import datetime
+from typing import Dict, List, Optional
 
-from src.core.parser_manager import ParserManager as BaseParserManager
-from src.database.cassandra_manager import CassandraManager, CassandraConfig
-from src.schemas.news import NewsArticle
 from src.core.logger import logger
+from src.core.parser_manager import ParserManager as BaseParserManager
+from src.database.cassandra_manager import CassandraConfig, CassandraManager
+from src.schemas.news import NewsArticle
 
 
 class CassandraParserManager(BaseParserManager):

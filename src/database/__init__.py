@@ -4,8 +4,8 @@ Provides unified access to database components.
 """
 
 from .cassandra_manager import (
-    CassandraManager,
     CassandraConfig,
+    CassandraManager,
     create_cassandra_manager,
 )
 

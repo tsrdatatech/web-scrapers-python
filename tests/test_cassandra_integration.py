@@ -2,12 +2,13 @@
 Tests for Cassandra database integration.
 """
 
-import pytest
 import uuid
 from datetime import datetime
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
-from src.database.cassandra_manager import CassandraManager, CassandraConfig
+import pytest
+
+from src.database.cassandra_manager import CassandraConfig, CassandraManager
 from src.schemas.news import NewsArticle
 
 

@@ -3,18 +3,19 @@ Cassandra database integration for web scraper.
 Provides data persistence, deduplication, and seed management.
 """
 
+import asyncio
 import hashlib
+import json
 import uuid
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Set
-from dataclasses import dataclass
-from cassandra.cluster import Cluster
-from cassandra.auth import PlainTextAuthProvider
-from cassandra.query import SimpleStatement
-import asyncio
-from cassandra.io.asyncorereactor import AsyncoreConnection
+
 import aiohttp
-import json
+from cassandra.auth import PlainTextAuthProvider
+from cassandra.cluster import Cluster
+from cassandra.io.asyncorereactor import AsyncoreConnection
+from cassandra.query import SimpleStatement
 
 from src.core.logger import logger
 from src.schemas.news import NewsArticle

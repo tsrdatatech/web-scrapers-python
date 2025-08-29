@@ -6,13 +6,14 @@ including content summarization, sentiment analysis, and topic classification.
 """
 
 from typing import Any, Dict, Optional
+
 from playwright.async_api import Page
 
+from src.ai.content_analyzer import create_content_analyzer
 from src.core.base_parser import BaseParser
 from src.core.logger import logger
 from src.parsers.generic_news import GenericNewsParser
 from src.schemas.news import NewsArticle
-from src.ai.content_analyzer import create_content_analyzer
 
 
 class AIEnhancedNewsParser(GenericNewsParser):

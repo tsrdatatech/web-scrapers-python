@@ -3,7 +3,7 @@ Pydantic schemas for news articles and related data structures.
 """
 
 from datetime import datetime
-from typing import Optional, List, Any, Dict
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, HttpUrl
 

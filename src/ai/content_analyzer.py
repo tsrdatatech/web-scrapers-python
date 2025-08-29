@@ -8,22 +8,23 @@ This module demonstrates advanced LangChain integration for:
 - Language detection and readability scoring
 """
 
+import logging
 import re
 from datetime import datetime
-from typing import Dict, List, Optional, Any
-import logging
+from typing import Any, Dict, List, Optional
 
 try:
-    from langchain_core.prompts import PromptTemplate
-    from langchain_core.output_parsers import PydanticOutputParser
-    from langchain_community.llms import FakeListLLM
     from langchain.schema import BaseMessage, HumanMessage
+    from langchain_community.llms import FakeListLLM
+    from langchain_core.output_parsers import PydanticOutputParser
+    from langchain_core.prompts import PromptTemplate
 
     LANGCHAIN_AVAILABLE = True
 except ImportError:
     LANGCHAIN_AVAILABLE = False
 
 from pydantic import BaseModel, Field
+
 from src.core.logger import logger
 from src.schemas.news import NewsArticle
 
