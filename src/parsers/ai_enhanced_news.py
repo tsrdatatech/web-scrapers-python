@@ -102,9 +102,7 @@ class AIEnhancedNewsParser(GenericNewsParser):
             logger.error(f"AI-enhanced parsing failed for {url}: {e}")
             return None
 
-    async def can_parse(
-        self, url: str, context: dict[str, Any] | None = None
-    ) -> bool:
+    async def can_parse(self, url: str, context: dict[str, Any] | None = None) -> bool:
         """
         Check if URL can be parsed with AI enhancements.
 

@@ -22,9 +22,7 @@ class GenericNewsParser(BaseParser):
     id = "generic-news"
     schema = NewsArticle
 
-    async def can_parse(
-        self, url: str, context: dict[str, Any] | None = None
-    ) -> bool:
+    async def can_parse(self, url: str, context: dict[str, Any] | None = None) -> bool:
         """Check if URL looks like a news article."""
         # Simple heuristic based on URL patterns
         news_patterns = [

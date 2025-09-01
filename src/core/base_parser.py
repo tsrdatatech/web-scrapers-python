@@ -17,9 +17,7 @@ class BaseParser(ABC):
     domains: list[str] = []  # Optional list of domains it handles
 
     @abstractmethod
-    async def can_parse(
-        self, url: str, context: dict[str, Any] | None = None
-    ) -> bool:
+    async def can_parse(self, url: str, context: dict[str, Any] | None = None) -> bool:
         """
         Determine if this parser can handle the given URL.
 

@@ -2,7 +2,7 @@
 name = "universal-web-scraper-python"
 version = "0.1.0"
 description = "Enterprise-grade web scraper with Kubernetes orchestration, async processing, and pluggable parser architecture."
-authors = ["Tom Thompson <tom@tsrdatatech.com>"]
+authors = ["Tom Russell <tsrdatatech@gmail.com>"]
 channels = ["conda-forge"]
 platforms = ["osx-64"]
 
@@ -31,25 +31,233 @@ ruff = ">=0.1.0"
 mypy = ">=1.5.0"
 
 [tasks]
-# Core workflow using uv for ultra-fast Python package management
+# ================================
+# Core Development Workflow
+# ================================
 install-uv-deps = "uv pip install -e ."
 install-browsers = "playwright install chromium"
 setup = { depends-on = ["install-uv-deps", "install-browsers"] }
 
-# Development
+# ================================
+# Application Execution
+# ================================
 scrape = "python src/main.py"
-dev = "python src/main.py --debug"
+scrape-debug = "python src/main.py --debug"
+scrape-weibo = "python src/main.py --parser weibo"
+orchestrator = "python src/orchestrator --parser generic_news"
+orchestrator-debug = "python src/orchestrator --parser generic_news --debug"
 
-# Testing
+# ================================
+# Testing & Quality Assurance
+# ================================
 test = "pytest tests/ -v"
 test-fast = "pytest tests/ -x"
 test-integration = "pytest tests/test_cassandra_integration.py -v"
+test-coverage = "pytest tests/ --cov=src --cov-report=html"
 
-# Code quality
+# Code quality workflow
 lint = "ruff check src/ tests/"
 format = "black src/ tests/ && ruff check --fix src/ tests/"
 type-check = "mypy src/"
+security = "bandit -r src/"
 
-# Combined workflows
-quality = { depends-on = ["format", "lint", "type-check"] }
-ci = { depends-on = ["quality", "test"] }
+# Combined quality checks
+quality = { depends-on = ["format", "lint", "type-check", "security"] }
+ci-test = { depends-on = ["quality", "test"] }
+
+# ================================
+# Docker Operations  
+# ================================
+docker-build = """
+docker build \
+  --platform linux/amd64 \
+  -f Dockerfile \
+  -t universal-web-scraper-python:latest \
+  -t universal-web-scraper-python:$(date +%Y%m%d-%H%M%S) \
+  .
+"""
+
+docker-run = """
+docker run --rm -it \
+  -e LOG_LEVEL=DEBUG \
+  universal-web-scraper-python:latest \
+  python -m src.main --parser generic_news --max-concurrency 2
+"""
+
+docker-push = """
+if [ -z "$REGISTRY" ]; then
+  echo "❌ REGISTRY not set. Use: REGISTRY=your-registry.com pixi run docker-push"
+  exit 1
+fi
+docker tag universal-web-scraper-python:latest $REGISTRY/universal-web-scraper-python:latest
+docker push $REGISTRY/universal-web-scraper-python:latest
+"""
+
+# ================================
+# Kubernetes - Cluster Operations
+# ================================
+k8s-check = "kubectl cluster-info"
+
+k8s-namespace = """
+kubectl create namespace web-scraper-python --dry-run=client -o yaml | kubectl apply -f -
+echo "✅ Namespace ready"
+"""
+
+k8s-dry-run = "cd deployment/kubernetes && DRY_RUN=true ./deploy.sh"
+
+# ================================
+# Kubernetes - Deployment
+# ================================
+k8s-config = """
+kubectl apply -f deployment/kubernetes/configmap.yaml
+kubectl apply -f deployment/kubernetes/orchestrator-config.yaml
+"""
+
+k8s-orchestrator = """
+kubectl apply -f deployment/kubernetes/batch-orchestrator.yaml
+kubectl rollout status deployment/batch-orchestrator -n web-scraper-python
+"""
+
+k8s-cronjobs = "kubectl apply -f deployment/kubernetes/cronjobs.yaml"
+
+# Full deployment workflows
+deploy = { depends-on = ["docker-build", "k8s-namespace"], cmd = "cd deployment/kubernetes && ./deploy.sh" }
+deploy-fast = { depends-on = ["k8s-namespace"], cmd = "cd deployment/kubernetes && ./deploy.sh" }
+
+# ================================
+# Kubernetes - Job Management
+# ================================
+job-run = """
+kubectl create job scraper-manual-$(date +%s) \
+  --from=cronjob/scraper-generic-news \
+  -n web-scraper-python
+echo "✅ Manual job created"
+"""
+
+job-run-weibo = """
+kubectl create job scraper-weibo-manual-$(date +%s) \
+  --from=cronjob/scraper-weibo \
+  -n web-scraper-python
+"""
+
+job-batch = """
+kubectl exec deployment/batch-orchestrator -n web-scraper-python -- \
+  python -m src.orchestrator --parser generic_news
+"""
+
+# CronJob management
+cron-suspend = """
+kubectl patch cronjob scraper-generic-news -n web-scraper-python -p '{"spec":{"suspend":true}}'
+kubectl patch cronjob scraper-weibo -n web-scraper-python -p '{"spec":{"suspend":true}}'
+echo "✅ CronJobs suspended"
+"""
+
+cron-resume = """
+kubectl patch cronjob scraper-generic-news -n web-scraper-python -p '{"spec":{"suspend":false}}'
+kubectl patch cronjob scraper-weibo -n web-scraper-python -p '{"spec":{"suspend":false}}'
+echo "✅ CronJobs resumed"
+"""
+
+# ================================
+# Kubernetes - Monitoring & Debugging
+# ================================
+k8s-status = """
+echo "📊 Deployment Status"
+echo "Deployments:"
+kubectl get deployments -n web-scraper-python -o wide
+echo ""
+echo "Jobs:"
+kubectl get jobs -n web-scraper-python -o wide
+echo ""
+echo "CronJobs:"
+kubectl get cronjobs -n web-scraper-python -o wide
+echo ""
+echo "Pods:"
+kubectl get pods -n web-scraper-python -o wide
+"""
+
+k8s-logs = "kubectl logs -f deployment/batch-orchestrator -n web-scraper-python"
+k8s-logs-scraper = "kubectl logs -f deployment/web-scraper-python -n web-scraper-python"
+
+k8s-logs-jobs = """
+echo "📋 Recent Job Logs"
+for job in $(kubectl get jobs -n web-scraper-python -o name | head -5); do
+  echo "Job: $job"
+  kubectl logs $job -n web-scraper-python --tail=20
+  echo ""
+done
+"""
+
+k8s-events = "kubectl get events -n web-scraper-python --sort-by='.metadata.creationTimestamp' | tail -20"
+
+k8s-describe-orchestrator = "kubectl describe deployment/batch-orchestrator -n web-scraper-python"
+
+# Interactive debugging
+k8s-shell-orchestrator = "kubectl exec -it deployment/batch-orchestrator -n web-scraper-python -- /bin/bash"
+k8s-shell-scraper = "kubectl exec -it deployment/web-scraper-python -n web-scraper-python -- /bin/bash"
+k8s-port-forward = "kubectl port-forward svc/batch-orchestrator 8080:8080 -n web-scraper-python"
+
+# Debug failed jobs
+k8s-debug-jobs = """
+echo "🐛 Debugging Failed Jobs"
+for job in $(kubectl get jobs -n web-scraper-python --field-selector=status.failed=1 -o name); do
+  echo "Failed job: $job"
+  kubectl describe $job -n web-scraper-python
+  echo ""
+done
+"""
+
+# ================================
+# Kubernetes - Scaling & Management
+# ================================
+k8s-scale-up = "kubectl scale deployment batch-orchestrator --replicas=3 -n web-scraper-python"
+k8s-scale-down = "kubectl scale deployment batch-orchestrator --replicas=1 -n web-scraper-python"
+k8s-restart = "kubectl rollout restart deployment/batch-orchestrator -n web-scraper-python"
+
+# ================================
+# Kubernetes - Cleanup
+# ================================
+k8s-clean-jobs = "kubectl delete jobs --field-selector=status.successful=1 -n web-scraper-python"
+k8s-clean-failed = "kubectl delete jobs --field-selector=status.failed=1 -n web-scraper-python"
+k8s-clean-all-jobs = "kubectl delete jobs --all -n web-scraper-python"
+k8s-clean-pods = """
+kubectl delete pods --field-selector=status.phase=Succeeded -n web-scraper-python
+kubectl delete pods --field-selector=status.phase=Failed -n web-scraper-python
+"""
+
+k8s-undeploy = """
+kubectl delete all --all -n web-scraper-python
+kubectl delete configmaps --all -n web-scraper-python
+kubectl delete secrets --all -n web-scraper-python
+echo "✅ All resources removed (namespace preserved)"
+"""
+
+k8s-nuke = """
+echo "⚠️  This will DELETE the entire namespace!"
+read -p "Are you sure? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  kubectl delete namespace web-scraper-python
+  echo "💥 Namespace deleted"
+else
+  echo "❌ Cancelled"
+fi
+"""
+
+# ================================
+# Development Environments
+# ================================
+kind-load = { depends-on = ["docker-build"], cmd = "kind load docker-image universal-web-scraper-python:latest" }
+minikube-load = { depends-on = ["docker-build"], cmd = "minikube image load universal-web-scraper-python:latest" }
+
+# ================================
+# Utility & Maintenance
+# ================================
+clean = { cmd = ["bash", "-c", "find . -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true; find . -name '*.pyc' -delete 2>/dev/null || true; find . -name '.pytest_cache' -type d -exec rm -rf {} + 2>/dev/null || true; find . -name '.mypy_cache' -type d -exec rm -rf {} + 2>/dev/null || true; find . -name '.ruff_cache' -type d -exec rm -rf {} + 2>/dev/null || true; echo '🧹 Cache files cleaned'"] }
+
+# Complete workflows
+dev-setup = { depends-on = ["setup", "docker-build", "k8s-namespace", "k8s-config"] }
+smoke-test = { depends-on = ["deploy"], cmd = "cd tests && python smoke_test.py" }
+
+# Help command  
+help = "echo '🚀 Universal Web Scraper - pixi Task Runner' && echo '' && echo '📦 Development:' && echo '  setup              Install dependencies and browsers' && echo '  scrape             Run scraper locally' && echo '  orchestrator       Run orchestrator locally' && echo '' && echo '🧪 Testing & Quality:' && echo '  test               Run all tests' && echo '  test-fast          Run tests (stop on first failure)' && echo '  quality            Run all code quality checks' && echo '  ci-test            Complete CI workflow' && echo '' && echo '🐳 Docker:' && echo '  docker-build       Build Docker image' && echo '  docker-run         Run Docker image locally' && echo '' && echo '☸️  Kubernetes - Deployment:' && echo '  deploy             Full deployment (build + deploy)' && echo '  deploy-fast        Deploy without rebuilding image' && echo '  k8s-status         Show deployment status' && echo '' && echo '🔧 Kubernetes - Management:' && echo '  job-run            Create manual job' && echo '  cron-suspend       Suspend all CronJobs' && echo '  cron-resume        Resume all CronJobs' && echo '  k8s-logs           Show orchestrator logs' && echo '  k8s-clean-jobs     Clean completed jobs' && echo '' && echo '🛠️  Utilities:' && echo '  clean              Clean cache files' && echo '  help               Show this help'"

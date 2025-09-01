@@ -2,7 +2,6 @@
 Parser manager for intelligent parser selection.
 """
 
-
 import httpx
 
 from .base_parser import BaseParser

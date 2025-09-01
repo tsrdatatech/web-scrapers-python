@@ -31,9 +31,7 @@ class WeiboParser(BaseParser):
     schema = WeiboPost
     domains = ["weibo.com"]
 
-    async def can_parse(
-        self, url: str, context: dict[str, Any] | None = None
-    ) -> bool:
+    async def can_parse(self, url: str, context: dict[str, Any] | None = None) -> bool:
         """Check if URL is from Weibo."""
         return "weibo.com" in url.lower()
 
