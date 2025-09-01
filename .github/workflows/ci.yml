@@ -26,69 +26,37 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
+    - name: Install pixi
+      uses: prefix-dev/setup-pixi@v0.8.1
       with:
-        version: latest
-        virtualenvs-create: true
-        virtualenvs-in-project: true
+        pixi-version: v0.34.0
+        cache: true
+        cache-write: ${{ github.event_name != 'pull_request' }}
     
-    - name: Install uv (faster package installer)
-      run: pip install uv
-    
-    - name: Load cached venv
-      id: cached-poetry-dependencies
-      uses: actions/cache@v3
-      with:
-        path: .venv
-        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
-    
-    - name: Install dependencies
-      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      run: |
-        # Use uv for faster dependency installation
-        poetry export -f requirements.txt --output requirements.txt --with dev
-        uv pip install -r requirements.txt
-        poetry install --no-interaction --no-root --with dev
-    
-    - name: Install project
-      run: poetry install --no-interaction
-    
-    - name: Install Kubernetes dependencies
-      run: poetry add kubernetes structlog
+    - name: Install dependencies with pixi
+      run: pixi install
     
     - name: Install Playwright browsers
-      run: poetry run playwright install chromium
+      run: pixi run playwright install chromium
     
-    - name: Run code quality checks
-      run: |
-        poetry run black --check src/ tests/
-        poetry run isort --check-only src/ tests/
-        poetry run flake8 src/ tests/
-        poetry run mypy src/
-
-    - name: Run security checks
-      run: |
-        # Skip safety scan for portfolio demo (requires interactive login)
-        echo "⚠️ Safety scan skipped (interactive login required for free tier)"
-        poetry run bandit -r src/ -f json
-
+    - name: Run complete quality checks
+      run: pixi run quality
+    
     - name: Run tests
-      run: |
-        poetry run pytest tests/ -v --tb=short
+      run: pixi run test
     
-    - name: Validate orchestrator
+    - name: Validate orchestrator imports
       run: |
-        poetry run python -c "from src.orchestrator import BatchOrchestrator, OrchestratorConfig; print('✅ Orchestrator imports successfully')"
+        pixi run python -c "from src.orchestrator import BatchOrchestrator, OrchestratorConfig; print('✅ Orchestrator imports successfully')"
     
     - name: Validate Kubernetes manifests
       run: |
         # Install yamllint for YAML syntax validation
-        pip install yamllint
+        pixi run pip install yamllint
         
         # Check YAML syntax
         echo "🔍 Validating YAML syntax..."
-        yamllint deployment/kubernetes/*.yaml || echo "⚠️ YAML lint warnings found"
+        pixi run yamllint deployment/kubernetes/*.yaml || echo "⚠️ YAML lint warnings found"
         
         # Install kubectl for manifest validation
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
