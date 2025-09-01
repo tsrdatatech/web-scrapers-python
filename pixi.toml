@@ -1,0 +1,55 @@
+[project]
+name = "universal-web-scraper-python"
+version = "0.1.0"
+description = "Enterprise-grade web scraper with Kubernetes orchestration, async processing, and pluggable parser architecture."
+authors = ["Tom Thompson <tom@tsrdatatech.com>"]
+channels = ["conda-forge"]
+platforms = ["osx-64"]
+
+[dependencies]
+python = ">=3.10,<3.13"
+uv = "*"
+
+[pypi-dependencies]
+# Step 2: Add scraping core
+crawlee = ">=0.6.12,<0.7.0"
+playwright = ">=1.47.0,<2.0.0"
+pydantic = ">=2.0.0,<3.0.0"
+newspaper3k = ">=0.2.8"
+trafilatura = ">=1.9.0"
+loguru = ">=0.7.0"
+python-dotenv = ">=1.0.0"
+httpx = ">=0.25.0"
+aiofiles = ">=23.0.0"
+structlog = ">=23.2.0"
+
+# Development
+pytest = ">=7.4.0"
+pytest-asyncio = ">=0.21.0"
+black = ">=24.3.0"
+ruff = ">=0.1.0"
+mypy = ">=1.5.0"
+
+[tasks]
+# Core workflow using uv for ultra-fast Python package management
+install-uv-deps = "uv pip install -e ."
+install-browsers = "playwright install chromium"
+setup = { depends-on = ["install-uv-deps", "install-browsers"] }
+
+# Development
+scrape = "python src/main.py"
+dev = "python src/main.py --debug"
+
+# Testing
+test = "pytest tests/ -v"
+test-fast = "pytest tests/ -x"
+test-integration = "pytest tests/test_cassandra_integration.py -v"
+
+# Code quality
+lint = "ruff check src/ tests/"
+format = "black src/ tests/ && ruff check --fix src/ tests/"
+type-check = "mypy src/"
+
+# Combined workflows
+quality = { depends-on = ["format", "lint", "type-check"] }
+ci = { depends-on = ["quality", "test"] }

@@ -1,0 +1,89 @@
+[tool.poetry]
+name = "universal-web-scraper-python"
+version = "0.1.0"
+description = "Enterprise-grade web scraper with Kubernetes orchestration, async processing, and pluggable parser architecture."
+authors = ["Tom Thompson <tom@tsrdatatech.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+crawlee = "^0.6.12"
+playwright = "^1.47.0"
+pydantic = "^2.0.0"
+newspaper3k = "^0.2.8"
+trafilatura = "^1.9.0"
+loguru = "^0.7.0"
+python-dotenv = "^1.0.0"
+httpx = "^0.25.0"
+aiofiles = "^23.0.0"
+kubernetes = "^29.0.0"
+structlog = "^23.2.0"
+langchain = "^0.3.27"
+langchain-community = "^0.3.29"
+langchain-huggingface = "^0.3.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+black = "^24.3.0"
+flake8 = "^6.0.0"
+mypy = "^1.5.0"
+isort = "^5.12.0"
+safety = "^3.0.0"
+bandit = "^1.7.0"
+
+[tool.poetry.scripts]
+scrape = "src.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py310', 'py311', 'py312']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+disallow_untyped_defs = false
+warn_return_any = false
+warn_unused_configs = false
+check_untyped_defs = false
+warn_no_return = false
+strict_optional = false
+allow_untyped_globals = true
+allow_redefinition = true
+follow_imports = "silent"
+show_error_codes = true
+
+# Skip type checking for problematic modules and third-party integrations
+[[tool.mypy.overrides]]
+module = [
+    "src.database.*",
+    "src.orchestrator",
+    "src.ai.*",
+    "src.main",
+    "src.core.proxy_config",
+    "src.routes",
+]
+ignore_errors = true
+
+# Allow missing stubs for external dependencies
+[[tool.mypy.overrides]]
+module = [
+    "aiofiles.*",
+    "crawlee.*",
+    "newspaper.*",
+    "trafilatura.*",
+    "kubernetes.*",
+    "cassandra.*",
+    "langchain.*",
+    "playwright.*",
+]
+ignore_missing_imports = true

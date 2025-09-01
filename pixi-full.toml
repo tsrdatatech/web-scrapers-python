@@ -1,0 +1,85 @@
+[project]
+name = "universal-web-scraper-python"
+version = "0.1.0"
+description = "Enterprise-grade web scraper with Kubernetes orchestration, async processing, and pluggable parser architecture."
+authors = ["Tom Thompson <tom@tsrdatatech.com>"]
+channels = ["conda-forge"]
+platforms = ["osx-64"]
+
+[dependencies]
+python = ">=3.10,<3.13"
+# System dependencies that conda handles well
+postgresql = "*"
+# Use uv for fast Python package installation
+uv = "*"
+
+[pypi-dependencies]
+# Core web scraping dependencies
+crawlee = ">=0.6.12,<0.7.0"
+playwright = ">=1.47.0,<2.0.0"
+pydantic = ">=2.0.0,<3.0.0"
+newspaper3k = ">=0.2.8"
+trafilatura = ">=1.9.0"
+loguru = ">=0.7.0"
+python-dotenv = ">=1.0.0"
+httpx = ">=0.25.0"
+aiofiles = ">=23.0.0"
+structlog = ">=23.2.0"
+kubernetes = ">=29.0.0"
+
+# Development dependencies - use uv for speed
+pytest = ">=7.4.0"
+pytest-asyncio = ">=0.21.0"
+black = ">=24.3.0"
+ruff = ">=0.1.0"  # Replace flake8 + isort with ruff
+mypy = ">=1.5.0"
+bandit = ">=1.7.0"
+
+[tasks]
+# Core workflow using uv for speed
+install-uv-deps = "uv pip install -e ."
+install-browsers = "playwright install chromium"
+setup = { depends-on = ["install-uv-deps", "install-browsers"] }
+
+# Development tasks
+scrape = "python src/main.py"
+dev = "python src/main.py --debug"
+
+# Testing
+test = "pytest tests/ -v"
+test-fast = "pytest tests/ -x"  # Stop on first failure
+test-integration = "pytest tests/test_cassandra_integration.py -v"
+
+# Code quality with modern tools
+lint = "ruff check src/ tests/"
+format = "black src/ tests/ && ruff check --fix src/ tests/"
+type-check = "mypy src/"
+security = "bandit -r src/"
+
+# Combined quality checks
+quality = { depends-on = ["format", "lint", "type-check", "security"] }
+ci = { depends-on = ["quality", "test"] }
+
+# Convenience tasks
+clean = "rm -rf .pytest_cache .mypy_cache __pycache__ .ruff_cache"
+requirements = "uv pip freeze > requirements.txt"
+
+[feature.cassandra.pypi-dependencies]
+# Optional Cassandra support
+cassandra-driver = ">=3.25.0,<4.0.0"
+
+[feature.langchain.pypi-dependencies]
+# Optional AI/ML features (separate due to dependency conflicts)
+langchain = ">=0.3.27,<0.4.0"
+langchain-community = ">=0.3.29,<0.4.0"
+langchain-huggingface = ">=0.3.1,<0.4.0"
+
+[environments]
+# Default: Core scraping without AI features
+default = { solve-group = "default" }
+
+# Full: All features including AI and Cassandra
+full = { features = ["cassandra", "langchain"], solve-group = "default" }
+
+# CI: Minimal for continuous integration
+ci = { features = [], solve-group = "default" }
