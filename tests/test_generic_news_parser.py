@@ -96,7 +96,6 @@ class TestGenericNewsParser:
                 "published_at": datetime(2024, 1, 15, 10, 0),
             },
         ):
-
             result = await parser.parse(mock_page, mock_context)
 
             assert isinstance(result, NewsArticle)
@@ -124,7 +123,6 @@ class TestGenericNewsParser:
                 return_value={"title": "Fallback Title", "content": "Fallback content"},
             ),
         ):
-
             result = await parser.parse(mock_page, mock_context)
 
             assert isinstance(result, NewsArticle)
@@ -139,7 +137,6 @@ class TestGenericNewsParser:
             patch.object(parser, "_extract_with_multiple_methods", return_value={}),
             patch.object(parser, "_extract_basic_content", return_value={}),
         ):
-
             result = await parser.parse(mock_page, mock_context)
             assert result is None
 
