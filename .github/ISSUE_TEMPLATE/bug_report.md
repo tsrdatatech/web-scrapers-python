@@ -26,7 +26,7 @@ A clear and concise description of what you expected to happen.
 - Python version: [e.g. 3.11]
 - Operating System: [e.g. macOS, Ubuntu]
 - Browser: [e.g. chrome, firefox]
-- Project dependencies: [output of `poetry show` or `pip list`]
+- Project dependencies: [output of `pixi list` or `pip list`]
 
 **Additional Context**
 Add any other context about the problem here. Screenshots, logs, or error messages are helpful.
@@ -60,7 +60,7 @@ If applicable, add screenshots to help explain your problem.
 - OS: [e.g. macOS, Ubuntu, Windows]
 - Python Version: [e.g. 3.9, 3.10, 3.11]
 - Project Version/Commit: [e.g. latest, commit hash]
-- Poetry Version (if using): [e.g. 1.4.2]
+- Pixi Version (if using): [e.g. 0.34.0]
 
 ## Error Logs
 

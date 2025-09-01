@@ -92,7 +92,7 @@ This project demonstrates enterprise-level software design patterns:
 ### DevOps & Production Practices
 - **CI/CD Pipeline**: Automated testing, quality checks, and deployment
 - **Containerization**: Multi-stage Docker builds with security hardening
-- **Environment Management**: Poetry for dependency management
+- **Environment Management**: Pixi + uv for fast, reliable dependency management
 - **Logging & Monitoring**: Structured logging with contextual error tracking
 - **Configuration Management**: Flexible configuration with environment support
 - **Security**: Dependency scanning and vulnerability assessment

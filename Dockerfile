@@ -4,9 +4,15 @@ FROM apify/actor-python-playwright:3.12
 # Set working directory
 WORKDIR /usr/src/app
 
-# Copy requirements and install additional Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install pixi
+RUN curl -fsSL https://pixi.sh/install.sh | bash
+ENV PATH="/root/.pixi/bin:$PATH"
+
+# Copy pixi configuration files
+COPY pixi.toml pixi.lock ./
+
+# Install dependencies using pixi
+RUN pixi install --frozen
 
 # Copy source code
 COPY src/ ./src/
@@ -15,5 +21,5 @@ COPY *.py ./
 # Expose port (if needed for web interface)
 EXPOSE 8000
 
-# Default command (using the same pattern as Apify's base image)
-CMD ["python3", "-m", "src.main"]
+# Default command (using pixi environment)
+CMD ["pixi", "run", "python", "-m", "src.main"]

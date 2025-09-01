@@ -51,12 +51,12 @@ jobs:
     
     - name: Validate Kubernetes manifests
       run: |
-        # Install yamllint for YAML syntax validation
-        pixi run pip install yamllint
+        # Install yamllint via pip (outside pixi environment)
+        pip install yamllint
         
         # Check YAML syntax
         echo "🔍 Validating YAML syntax..."
-        pixi run yamllint deployment/kubernetes/*.yaml || echo "⚠️ YAML lint warnings found"
+        yamllint deployment/kubernetes/*.yaml || echo "⚠️ YAML lint warnings found"
         
         # Install kubectl for manifest validation
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"

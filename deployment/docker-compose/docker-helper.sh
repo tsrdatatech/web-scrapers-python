@@ -156,7 +156,7 @@ case $COMMAND in
     test)
         print_status "Running tests in Docker container..."
         docker run --rm -v $(pwd)/../../:/app -w /app web-scraper:$VERSION \
-            bash -c "poetry install && poetry run pytest tests/ -v"
+            bash -c "pixi install && pixi run test"
         print_success "Tests completed"
         ;;
     
