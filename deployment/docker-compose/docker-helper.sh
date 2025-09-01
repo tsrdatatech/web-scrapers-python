@@ -156,7 +156,7 @@ case $COMMAND in
     test)
         print_status "Running tests in Docker container..."
         docker run --rm -v $(pwd)/../../:/app -w /app web-scraper:$VERSION \
-            bash -c "pixi install && pixi run test"
+            bash -c "uv pip install --system pytest pytest-asyncio && python -m pytest tests/ -v"
         print_success "Tests completed"
         ;;
     
