@@ -7,8 +7,8 @@ WORKDIR /usr/src/app
 # Install uv for fast dependency installation
 RUN pip install uv
 
-# Copy project files
-COPY pyproject.toml ./
+# Copy all necessary files for package installation
+COPY pyproject.toml README.md ./
 COPY src/ ./src/
 COPY *.py ./
 
@@ -17,16 +17,16 @@ RUN uv pip install --system -e .
 
 # Install additional development dependencies that are in pixi but needed for runtime
 RUN uv pip install --system \
-    crawlee>=0.6.12,<0.7.0 \
-    playwright>=1.47.0,<2.0.0 \
-    pydantic>=2.0.0,<3.0.0 \
-    newspaper3k>=0.2.8 \
-    trafilatura>=1.9.0 \
-    loguru>=0.7.0 \
-    python-dotenv>=1.0.0 \
-    httpx>=0.25.0 \
-    aiofiles>=23.0.0 \
-    structlog>=23.2.0
+    "crawlee>=0.6.12,<0.7.0" \
+    "playwright>=1.47.0,<2.0.0" \
+    "pydantic>=2.0.0,<3.0.0" \
+    "newspaper3k>=0.2.8" \
+    "trafilatura>=1.9.0" \
+    "loguru>=0.7.0" \
+    "python-dotenv>=1.0.0" \
+    "httpx>=0.25.0" \
+    "aiofiles>=23.0.0" \
+    "structlog>=23.2.0"
 
 # Expose port (if needed for web interface)
 EXPOSE 8000
