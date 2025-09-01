@@ -8,7 +8,6 @@ platforms = ["osx-64", "linux-64"]
 
 [dependencies]
 python = ">=3.10,<3.13"
-uv = "*"
 
 [pypi-dependencies]
 # Step 2: Add scraping core
