@@ -32,6 +32,7 @@ jobs:
         pixi-version: v0.34.0
         cache: true
         cache-write: ${{ github.event_name != 'pull_request' }}
+        locked: false
     
     - name: Install dependencies with pixi
       run: pixi install

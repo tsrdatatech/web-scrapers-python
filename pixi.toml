@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Enterprise-grade web scraper with Kubernetes orchestration, async processing, and pluggable parser architecture."
 authors = ["Tom Russell <tsrdatatech@gmail.com>"]
 channels = ["conda-forge"]
-platforms = ["osx-64"]
+platforms = ["osx-64", "linux-64"]
 
 [dependencies]
 python = ">=3.10,<3.13"
