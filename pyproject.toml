@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
+    "Intended Audience :: Developers", 
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
@@ -33,7 +33,7 @@ Issues = "https://github.com/tsrdatatech/web-scrapers-python/issues"
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
 
-# Tool configurations (keep these for editor integration)
+# Tool configurations for development tools and editors
 [tool.ruff]
 line-length = 88
 target-version = "py310"
@@ -43,7 +43,6 @@ select = ["E", "F", "I", "N", "W", "UP"]
 ignore = ["E501"]  # Line too long (handled by ruff format)
 
 [tool.ruff.format]
-# Use ruff's formatter instead of black
 docstring-code-format = true
 
 [tool.mypy]
