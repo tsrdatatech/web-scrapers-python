@@ -4,7 +4,7 @@ Proxy configuration for free and paid proxies.
 
 import os
 import random
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import httpx
 
@@ -22,7 +22,7 @@ FREE_PROXIES = [
 
 async def fetch_proxyscrape_proxies(
     protocol: str = "http", timeout: int = 5000, country: str = "all"
-) -> List[str]:
+) -> list[str]:
     """
     Fetch fresh proxy list from ProxyScrape v4 API.
 
@@ -112,7 +112,7 @@ async def test_proxy(proxy: str, test_url: str = "http://httpbin.org/ip") -> boo
         return False
 
 
-async def get_working_proxies(max_proxies: int = 5, test_count: int = 10) -> List[str]:
+async def get_working_proxies(max_proxies: int = 5, test_count: int = 10) -> list[str]:
     """
     Get a list of working free proxies.
 
@@ -153,7 +153,7 @@ async def get_working_proxies(max_proxies: int = 5, test_count: int = 10) -> Lis
     return working_proxies
 
 
-async def create_proxy_configuration() -> Optional[Dict[str, Any]]:
+async def create_proxy_configuration() -> dict[str, Any] | None:
     """
     Create proxy configuration for Crawlee.
 

@@ -5,7 +5,7 @@ This parser extends the base GenericNewsParser with advanced AI capabilities
 including content summarization, sentiment analysis, and topic classification.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from playwright.async_api import Page
 
@@ -41,7 +41,7 @@ class AIEnhancedNewsParser(GenericNewsParser):
             create_content_analyzer(use_mock_llm=True) if enable_ai_analysis else None
         )
 
-    async def parse(self, page: Page, context: Dict[str, Any]) -> Optional[NewsArticle]:
+    async def parse(self, page: Page, context: dict[str, Any]) -> NewsArticle | None:
         """
         Parse news article with AI-powered enhancements.
 
@@ -103,7 +103,7 @@ class AIEnhancedNewsParser(GenericNewsParser):
             return None
 
     async def can_parse(
-        self, url: str, context: Optional[Dict[str, Any]] = None
+        self, url: str, context: dict[str, Any] | None = None
     ) -> bool:
         """
         Check if URL can be parsed with AI enhancements.

@@ -3,7 +3,7 @@ Abstract base class for all parsers.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from playwright.async_api import Page
 from pydantic import BaseModel
@@ -13,12 +13,12 @@ class BaseParser(ABC):
     """Abstract base class for all site-specific parsers."""
 
     id: str = "base"
-    schema: Optional[type[BaseModel]] = None  # Pydantic model class
-    domains: List[str] = []  # Optional list of domains it handles
+    schema: type[BaseModel] | None = None  # Pydantic model class
+    domains: list[str] = []  # Optional list of domains it handles
 
     @abstractmethod
     async def can_parse(
-        self, url: str, context: Optional[Dict[str, Any]] = None
+        self, url: str, context: dict[str, Any] | None = None
     ) -> bool:
         """
         Determine if this parser can handle the given URL.
@@ -33,7 +33,7 @@ class BaseParser(ABC):
         return False
 
     @abstractmethod
-    async def parse(self, page: Page, context: Dict[str, Any]) -> Optional[BaseModel]:
+    async def parse(self, page: Page, context: dict[str, Any]) -> BaseModel | None:
         """
         Parse the page and extract structured data.
 
@@ -46,7 +46,7 @@ class BaseParser(ABC):
         """
         raise NotImplementedError("parse() method must be implemented")
 
-    def validate_data(self, data: Dict[str, Any]) -> BaseModel:
+    def validate_data(self, data: dict[str, Any]) -> BaseModel:
         """
         Validate raw data against the parser's schema.
 

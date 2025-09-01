@@ -10,7 +10,7 @@ This module demonstrates advanced LangChain integration for:
 
 import re
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 try:
     from langchain_community.llms import FakeListLLM
@@ -50,10 +50,10 @@ class ContentAnalysis(BaseModel):
     )
 
     # Classification
-    topics: List[str] = Field(
+    topics: list[str] = Field(
         default_factory=list, description="Main article topics/categories"
     )
-    entities: List[str] = Field(
+    entities: list[str] = Field(
         default_factory=list, description="Key entities (people, orgs, places)"
     )
     language: str = Field(default="en", description="Detected language code")
@@ -225,7 +225,7 @@ class AdvancedContentAnalyzer:
             logger.error(f"Content analysis failed: {e}")
             return self._fallback_analysis(title, content, word_count)
 
-    async def _run_llm_analysis(self, title: str, content: str) -> Dict[str, Any]:
+    async def _run_llm_analysis(self, title: str, content: str) -> dict[str, Any]:
         """Run LangChain-powered LLM analysis."""
         try:
             # Truncate content for efficiency
@@ -405,7 +405,7 @@ class AdvancedContentAnalyzer:
         else:
             return "neutral"
 
-    def _extract_topics_basic(self, text: str) -> List[str]:
+    def _extract_topics_basic(self, text: str) -> list[str]:
         """Basic topic extraction using keyword matching."""
         if not text:
             return []
@@ -463,7 +463,7 @@ class AdvancedContentAnalyzer:
 
         return detected_topics[:3]  # Limit to 3 topics
 
-    def _extract_entities_basic(self, text: str) -> List[str]:
+    def _extract_entities_basic(self, text: str) -> list[str]:
         """Basic entity extraction using pattern matching."""
         if not text:
             return []

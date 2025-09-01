@@ -4,7 +4,6 @@ Parser registry for auto-discovery and management of parsers.
 
 import importlib.util
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from .base_parser import BaseParser
 from .logger import logger
@@ -14,22 +13,22 @@ class ParserRegistry:
     """Registry for managing and discovering parsers."""
 
     def __init__(self) -> None:
-        self.parsers: Dict[str, BaseParser] = {}
+        self.parsers: dict[str, BaseParser] = {}
 
     def register(self, parser: BaseParser) -> None:
         """Register a parser instance."""
         self.parsers[parser.id] = parser
         logger.info(f"Registered parser: {parser.id}")
 
-    def get(self, parser_id: str) -> Optional[BaseParser]:
+    def get(self, parser_id: str) -> BaseParser | None:
         """Get a parser by ID."""
         return self.parsers.get(parser_id)
 
-    def all(self) -> List[BaseParser]:
+    def all(self) -> list[BaseParser]:
         """Get all registered parsers."""
         return list(self.parsers.values())
 
-    def get_by_domain(self, domain: str) -> List[BaseParser]:
+    def get_by_domain(self, domain: str) -> list[BaseParser]:
         """Get parsers that can handle a specific domain."""
         return [parser for parser in self.parsers.values() if domain in parser.domains]
 

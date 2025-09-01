@@ -13,7 +13,6 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
 
 try:
     from kubernetes import client
@@ -80,17 +79,17 @@ class OrchestratorConfig:
 class BatchJob:
     """Represents a batch scraping job"""
 
-    def __init__(self, job_id: str, batch_id: int, urls: List[str], parser: str):
+    def __init__(self, job_id: str, batch_id: int, urls: list[str], parser: str):
         self.job_id = job_id
         self.batch_id = batch_id
         self.urls = urls
         self.parser = parser
         self.status = "pending"
         self.created_at = datetime.now()
-        self.started_at: Optional[datetime] = None
-        self.completed_at: Optional[datetime] = None
+        self.started_at: datetime | None = None
+        self.completed_at: datetime | None = None
         self.retry_count = 0
-        self.k8s_job_name: Optional[str] = None
+        self.k8s_job_name: str | None = None
 
 
 class BatchOrchestrator:
@@ -125,13 +124,13 @@ class BatchOrchestrator:
         self.core_v1 = client.CoreV1Api()
 
         # Job tracking
-        self.active_jobs: Dict[str, BatchJob] = {}
-        self.url_batches: List[List[str]] = []
-        self.completed_batches: List[BatchJob] = []
-        self.failed_batches: List[BatchJob] = []
+        self.active_jobs: dict[str, BatchJob] = {}
+        self.url_batches: list[list[str]] = []
+        self.completed_batches: list[BatchJob] = []
+        self.failed_batches: list[BatchJob] = []
         self.is_running = False
 
-    def load_and_batch_urls(self, seed_file: Optional[str] = None) -> int:
+    def load_and_batch_urls(self, seed_file: str | None = None) -> int:
         """Load URLs from seed file and create batches"""
         seed_path = Path(seed_file or self.config.seed_file)
 
@@ -143,7 +142,7 @@ class BatchOrchestrator:
             raise FileNotFoundError(f"Seed file not found: {seed_path}")
 
         try:
-            with open(seed_path, "r", encoding="utf-8") as f:
+            with open(seed_path, encoding="utf-8") as f:
                 urls = [
                     line.strip()
                     for line in f
@@ -178,7 +177,7 @@ class BatchOrchestrator:
             )
             raise
 
-    def create_job_manifest(self, job: BatchJob) -> Dict:
+    def create_job_manifest(self, job: BatchJob) -> dict:
         """Create Kubernetes Job manifest for a batch"""
         job_name = f"scraper-batch-{job.batch_id}-{int(time.time())}"
         job.k8s_job_name = job_name
@@ -290,7 +289,7 @@ class BatchOrchestrator:
         return manifest
 
     async def create_batch_job(
-        self, batch_id: int, urls: List[str], parser: str
+        self, batch_id: int, urls: list[str], parser: str
     ) -> BatchJob:
         """Create and submit a batch job to Kubernetes"""
         job_id = f"batch-{batch_id}-{int(time.time())}"
@@ -418,7 +417,7 @@ class BatchOrchestrator:
                     )
 
     async def run_orchestration(
-        self, parser: Optional[str] = None, seed_file: Optional[str] = None
+        self, parser: str | None = None, seed_file: str | None = None
     ) -> None:
         """Main orchestration loop"""
         parser = parser or self.config.default_parser
@@ -497,7 +496,7 @@ class BatchOrchestrator:
                 ),
             )
 
-    def get_status_summary(self) -> Dict:
+    def get_status_summary(self) -> dict:
         """Get current orchestration status"""
         return {
             "is_running": self.is_running,

@@ -3,7 +3,7 @@ Pydantic schemas for news articles and related data structures.
 """
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, HttpUrl
 
@@ -11,18 +11,18 @@ from pydantic import BaseModel, Field, HttpUrl
 class NewsArticle(BaseModel):
     """Schema for news article data."""
 
-    id: Optional[str] = Field(None, description="Unique identifier for the article")
+    id: str | None = Field(None, description="Unique identifier for the article")
     title: str = Field(..., description="Article title")
-    author: Optional[str] = Field(None, description="Article author")
-    published_at: Optional[datetime] = Field(None, description="Publication date")
+    author: str | None = Field(None, description="Article author")
+    published_at: datetime | None = Field(None, description="Publication date")
     url: HttpUrl = Field(..., description="Article URL")
-    description: Optional[str] = Field(None, description="Article description/summary")
-    content: Optional[str] = Field(None, description="Full article content")
-    image: Optional[HttpUrl] = Field(None, description="Featured image URL")
-    source: Optional[str] = Field(None, description="Source domain/publication")
+    description: str | None = Field(None, description="Article description/summary")
+    content: str | None = Field(None, description="Full article content")
+    image: HttpUrl | None = Field(None, description="Featured image URL")
+    source: str | None = Field(None, description="Source domain/publication")
 
     # AI Analysis Results (Optional) - stored as dict to avoid circular imports
-    ai_analysis: Optional[Dict[str, Any]] = Field(
+    ai_analysis: dict[str, Any] | None = Field(
         None, description="AI-powered content analysis results"
     )
 

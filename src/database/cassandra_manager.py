@@ -8,7 +8,7 @@ import json
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 try:
     from cassandra.auth import PlainTextAuthProvider
@@ -39,11 +39,11 @@ from src.schemas.news import NewsArticle
 class CassandraConfig:
     """Cassandra connection configuration."""
 
-    hosts: List[str] = None
+    hosts: list[str] = None
     port: int = 9042
     keyspace: str = "web_scraper"
-    username: Optional[str] = None
-    password: Optional[str] = None
+    username: str | None = None
+    password: str | None = None
     replication_factor: int = 1
 
     def __post_init__(self) -> None:
@@ -67,7 +67,7 @@ class CassandraManager:
         self.config = config
         self.cluster = None
         self.session = None
-        self._prepared_statements: Dict[str, Any] = {}
+        self._prepared_statements: dict[str, Any] = {}
 
     async def connect(self) -> None:
         """Establish connection to Cassandra cluster."""
@@ -350,7 +350,7 @@ class CassandraManager:
                 [url_hash, url, now, now, 1, article_id, "processed"],
             )
 
-    async def get_seed_urls(self, limit: int = 100) -> List[Dict[str, str]]:
+    async def get_seed_urls(self, limit: int = 100) -> list[dict[str, str]]:
         """Retrieve active seed URLs for crawling."""
         try:
             result = self.session.execute(self._prepared_statements["get_active_seeds"])
@@ -378,8 +378,8 @@ class CassandraManager:
     async def add_seed_url(
         self,
         url: str,
-        label: Optional[str] = None,
-        parser: Optional[str] = None,
+        label: str | None = None,
+        parser: str | None = None,
         priority: int = 1,
     ) -> None:
         """Add new seed URL to the database."""
@@ -463,7 +463,7 @@ class CassandraManager:
         except Exception as e:
             logger.warning("Failed to update duplicate tracking", error=str(e))
 
-    async def get_crawl_statistics(self, days: int = 7) -> Dict[str, int]:
+    async def get_crawl_statistics(self, days: int = 7) -> dict[str, int]:
         """Get crawl statistics for the last N days."""
         try:
             from datetime import date, timedelta
@@ -499,7 +499,7 @@ class CassandraManager:
 
 # Factory function for easy initialization
 async def create_cassandra_manager(
-    config: Optional[CassandraConfig] = None,
+    config: CassandraConfig | None = None,
 ) -> CassandraManager:
     """Create and connect to Cassandra manager."""
     if config is None:

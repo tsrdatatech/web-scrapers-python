@@ -4,7 +4,7 @@ Generic news parser using article extraction libraries.
 
 import re
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 import newspaper
@@ -23,7 +23,7 @@ class GenericNewsParser(BaseParser):
     schema = NewsArticle
 
     async def can_parse(
-        self, url: str, context: Optional[Dict[str, Any]] = None
+        self, url: str, context: dict[str, Any] | None = None
     ) -> bool:
         """Check if URL looks like a news article."""
         # Simple heuristic based on URL patterns
@@ -40,7 +40,7 @@ class GenericNewsParser(BaseParser):
         url_lower = url.lower()
         return any(re.search(pattern, url_lower) for pattern in news_patterns)
 
-    async def parse(self, page: Page, context: Dict[str, Any]) -> Optional[NewsArticle]:
+    async def parse(self, page: Page, context: dict[str, Any]) -> NewsArticle | None:
         """Parse news article from the page."""
         request = context["request"]
         url = request.loaded_url or request.url
@@ -70,7 +70,7 @@ class GenericNewsParser(BaseParser):
 
     async def _extract_with_multiple_methods(
         self, page: Page, url: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Extract article using multiple methods and combine results."""
         article_data = {}
 
@@ -118,7 +118,7 @@ class GenericNewsParser(BaseParser):
 
         return article_data
 
-    async def _extract_basic_content(self, page: Page) -> Dict[str, Any]:
+    async def _extract_basic_content(self, page: Page) -> dict[str, Any]:
         """Extract basic content using CSS selectors as fallback."""
         data = {}
 
@@ -171,9 +171,9 @@ class GenericNewsParser(BaseParser):
 
         return data
 
-    def _clean_article_data(self, data: Dict[str, Any], url: str) -> Dict[str, Any]:
+    def _clean_article_data(self, data: dict[str, Any], url: str) -> dict[str, Any]:
         """Clean and normalize extracted article data."""
-        cleaned: Dict[str, Any] = {
+        cleaned: dict[str, Any] = {
             "url": url,
             "source": urlparse(url).netloc,
         }
@@ -218,7 +218,7 @@ class GenericNewsParser(BaseParser):
 
         return cleaned
 
-    def _parse_date(self, date_value: Any) -> Optional[datetime]:
+    def _parse_date(self, date_value: Any) -> datetime | None:
         """Parse various date formats into datetime object."""
         if not date_value:
             return None

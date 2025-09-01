@@ -3,7 +3,6 @@ Enhanced parser manager with Cassandra integration.
 Provides persistent storage, deduplication, and seed management.
 """
 
-from typing import Dict, List, Optional
 
 from src.core.logger import logger
 from src.core.parser_manager import ParserManager as BaseParserManager
@@ -39,10 +38,10 @@ class CassandraParserManager(BaseParserManager):
     - Crawl statistics and performance tracking
     """
 
-    def __init__(self, registry, cassandra_config: Optional[CassandraConfig] = None):
+    def __init__(self, registry, cassandra_config: CassandraConfig | None = None):
         super().__init__(registry)
         self.cassandra_config = cassandra_config or CassandraConfig()
-        self.db_manager: Optional[CassandraManager] = None
+        self.db_manager: CassandraManager | None = None
         self._stats = {"articles_stored": 0, "duplicates_skipped": 0, "errors": 0}
 
     async def initialize(self) -> None:
@@ -92,7 +91,7 @@ class CassandraParserManager(BaseParserManager):
             # Don't re-raise - continue scraping even if storage fails
             return False
 
-    async def get_seed_urls(self, limit: int = 100) -> List[Dict[str, str]]:
+    async def get_seed_urls(self, limit: int = 100) -> list[dict[str, str]]:
         """
         Get seed URLs from database instead of file.
         Falls back to file-based seeds if database unavailable.
@@ -118,8 +117,8 @@ class CassandraParserManager(BaseParserManager):
     async def add_seed_url(
         self,
         url: str,
-        label: Optional[str] = None,
-        parser: Optional[str] = None,
+        label: str | None = None,
+        parser: str | None = None,
         priority: int = 1,
     ) -> None:
         """Add new seed URL to database."""
@@ -133,7 +132,7 @@ class CassandraParserManager(BaseParserManager):
         except Exception as e:
             logger.error("Failed to add seed URL", error=str(e), url=url)
 
-    async def get_crawl_statistics(self) -> Dict[str, int]:
+    async def get_crawl_statistics(self) -> dict[str, int]:
         """Get comprehensive crawl statistics."""
         stats = self._stats.copy()
 
@@ -146,7 +145,7 @@ class CassandraParserManager(BaseParserManager):
 
         return stats
 
-    async def _get_file_based_seeds(self) -> List[Dict[str, str]]:
+    async def _get_file_based_seeds(self) -> list[dict[str, str]]:
         """Fallback to file-based seed loading."""
         try:
             from src.core.seeds import parse_seeds_file
@@ -170,7 +169,7 @@ class CassandraParserManager(BaseParserManager):
 
 # Factory function for creating enhanced parser manager
 async def create_cassandra_parser_manager(
-    registry, cassandra_config: Optional[CassandraConfig] = None
+    registry, cassandra_config: CassandraConfig | None = None
 ):
     """Create parser manager with Cassandra integration."""
     manager = CassandraParserManager(registry, cassandra_config)

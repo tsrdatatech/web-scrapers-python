@@ -3,7 +3,7 @@ Weibo social media parser.
 """
 
 import re
-from typing import Any, Dict, Optional
+from typing import Any
 
 from playwright.async_api import Page
 from pydantic import BaseModel, Field, HttpUrl
@@ -16,11 +16,11 @@ class WeiboPost(BaseModel):
     """Schema for Weibo post data."""
 
     id: str = Field(..., description="Post ID")
-    author: Optional[str] = Field(None, description="Post author")
+    author: str | None = Field(None, description="Post author")
     content: str = Field(..., description="Post content")
-    likes: Optional[int] = Field(None, description="Number of likes")
-    reposts: Optional[int] = Field(None, description="Number of reposts")
-    comments: Optional[int] = Field(None, description="Number of comments")
+    likes: int | None = Field(None, description="Number of likes")
+    reposts: int | None = Field(None, description="Number of reposts")
+    comments: int | None = Field(None, description="Number of comments")
     url: HttpUrl = Field(..., description="Post URL")
 
 
@@ -32,12 +32,12 @@ class WeiboParser(BaseParser):
     domains = ["weibo.com"]
 
     async def can_parse(
-        self, url: str, context: Optional[Dict[str, Any]] = None
+        self, url: str, context: dict[str, Any] | None = None
     ) -> bool:
         """Check if URL is from Weibo."""
         return "weibo.com" in url.lower()
 
-    async def parse(self, page: Page, context: Dict[str, Any]) -> Optional[WeiboPost]:
+    async def parse(self, page: Page, context: dict[str, Any]) -> WeiboPost | None:
         """Parse Weibo post from the page."""
         request = context["request"]
         url = request.loaded_url or request.url
@@ -85,7 +85,7 @@ class WeiboParser(BaseParser):
             logger.error(f"Failed to parse Weibo post from {url}: {e}")
             return None
 
-    async def _safe_text_content(self, page: Page, selectors: str) -> Optional[str]:
+    async def _safe_text_content(self, page: Page, selectors: str) -> str | None:
         """Safely extract text content using multiple selectors."""
         for selector in selectors.split(", "):
             try:
@@ -98,7 +98,7 @@ class WeiboParser(BaseParser):
                 continue
         return None
 
-    async def _extract_number(self, page: Page, selectors: str) -> Optional[int]:
+    async def _extract_number(self, page: Page, selectors: str) -> int | None:
         """Extract and parse numbers from text (likes, comments, etc.)."""
         text = await self._safe_text_content(page, selectors)
         if not text:

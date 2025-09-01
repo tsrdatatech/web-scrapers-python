@@ -5,14 +5,14 @@ Seed file parsing and URL resolution.
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import aiofiles
 
 from .logger import logger
 
 
-async def resolve_seeds(args: Any) -> List[Dict[str, Any]]:
+async def resolve_seeds(args: Any) -> list[dict[str, Any]]:
     """
     Resolve seed URLs from command line arguments.
 
@@ -36,7 +36,7 @@ async def resolve_seeds(args: Any) -> List[Dict[str, Any]]:
     raise ValueError("Provide --url or --file argument")
 
 
-async def parse_seeds_file(file_path: str) -> List[Dict[str, Any]]:
+async def parse_seeds_file(file_path: str) -> list[dict[str, Any]]:
     """
     Parse seeds from a file.
 
@@ -51,7 +51,7 @@ async def parse_seeds_file(file_path: str) -> List[Dict[str, Any]]:
 
     seeds = []
 
-    async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
+    async with aiofiles.open(file_path, encoding="utf-8") as f:
         content = await f.read()
         lines = content.strip().split("\n")
 
@@ -73,7 +73,7 @@ async def parse_seeds_file(file_path: str) -> List[Dict[str, Any]]:
     return seeds
 
 
-def parse_seed_line(line: str) -> Optional[Dict[str, Any]]:
+def parse_seed_line(line: str) -> dict[str, Any] | None:
     """
     Parse a single seed line.
 

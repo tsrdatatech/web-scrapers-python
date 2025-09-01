@@ -2,7 +2,6 @@
 Parser manager for intelligent parser selection.
 """
 
-from typing import Optional
 
 import httpx
 
@@ -18,8 +17,8 @@ class ParserManager:
         self.registry = registry
 
     async def select_parser(
-        self, url: str, forced_id: Optional[str] = None, context: Optional[dict] = None
-    ) -> Optional[BaseParser]:
+        self, url: str, forced_id: str | None = None, context: dict | None = None
+    ) -> BaseParser | None:
         """
         Select the most appropriate parser for a given URL.
 
