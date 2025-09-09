@@ -7,7 +7,7 @@ name = "universal-web-scraper-python"
 version = "0.1.0"
 description = "Enterprise-grade web scraper with Kubernetes orchestration, async processing, and pluggable parser architecture."
 authors = [
-    {name = "Tom Thompson", email = "tom@tsrdatatech.com"},
+    {name = "Tom Russell", email = "tsrdatatech@gmail.com"},
 ]
 readme = "README.md"
 requires-python = ">=3.10"
